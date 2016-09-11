@@ -1,0 +1,14 @@
+
+<aside class="site">
+
+  {{ $tags := .Site.Taxonomies.tags }}
+  <div class="taglist">
+    <div class="tags">
+      {{ range first 10 $tags.ByCount }}
+      <a href="{{ $.Site.BaseURL}}tags/{{ .Name | urlize }}" class="list-group-item">{{ .Name }}</a>
+      {{ end }}
+    </div>
+  </div>
+
+</aside>
+

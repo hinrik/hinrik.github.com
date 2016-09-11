@@ -1,0 +1,18 @@
+baseurl = "http://nix.is:1313/"
+title = "literal thoughts"
+languageCode = "en-us"
+theme = "hugo-theme-literal"
+pygmentsstyle = "tango"
+disqusShortname = "literalthoughts"
+
+[permalinks]
+    post = "/:filename"
+
+[[menu.main]]
+    name = "Github"
+    url = "http://github.com/hinrik"
+
+[[menu.main]]
+    name = "Flickr"
+    url = "https://www.flickr.com/photos/hinrik"
+
