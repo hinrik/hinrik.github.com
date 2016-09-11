@@ -4,6 +4,7 @@ languageCode = "en-us"
 theme = "hugo-theme-literal"
 pygmentsstyle = "tango"
 disqusShortname = "literalthoughts"
+googleAnalytics = "UA-29839174-2"
 
 [permalinks]
     post = "/:filename"
