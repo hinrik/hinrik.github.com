@@ -1,4 +1,4 @@
-baseurl = "http://nix.is:1313/"
+baseurl = "http://blog.nix.is/"
 title = "literal thoughts"
 languageCode = "en-us"
 theme = "hugo-theme-literal"
