@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>perl6.vim gets more love - literal thoughts</title>
+<meta property="og:title" content="perl6.vim gets more love - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">7 min read</span>
+    
+
+    <h1 class="article-title">perl6.vim gets more love</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/vim">vim</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">March 3, 2015</span>
+    
+
+    <div class="article-content">
+      <p>tl;dr: Some tuits came my way, so Vim&rsquo;s syntax highlighting of Perl 6 is
+much better and faster now. Try it!
+</p>
+
+<blockquote>
+<p>&lt;timotimo&gt; hoelzro: i just skimmed the perl6 vim syntax and &hellip; oh crap</p>
+
+<p>&lt;timotimo&gt; there&rsquo;s just no way i could even make a dent in that thing</p>
+
+<p>* psch usually turns off highlighting in vim because it&rsquo;s so slow :/</p>
+
+<p>&lt;sorear&gt; perl 6 is not really syntax-highlightable</p>
+</blockquote>
+
+<p>So&hellip;yeah, perl6.vim is a bit of a beast.</p>
+
+<h3 id="recent-history-of-perl6-vim">Recent history of perl6.vim</h3>
+
+<p>Sometime in 2008 or so, I got interested in Perl 6, and I really wanted it
+to be nicely higlighted in my editor (Vim) as I learned. As it turned out,
+there was already a Vim syntax file for it, in the
+<a href="http://svn.openfoundry.org/pugs/util/perl6.vim">Pugs SVN</a> repository. This
+was mostly the work of <code>lpalmer++</code> and <code>moritz++</code>. It worked decently, but
+as I learned about more nooks and crannies of Perl 6 (there sure are enough
+of them) I started finding the limitations of the highlighting to be
+frustrating.</p>
+
+<p>I wanted to make it better, so I started learning all about Vim&rsquo;s
+regexes and syntax highlighting support. I began hacking on <code>perl6.vim</code>,
+and soon enough it grew to be the largest Vim syntax file in existence.
+Perl 6 is hard enough to parse already. Having to do so with Vim patterns,
+doubly so. I made some progress but eventually the performance of the
+highlighting suffered as it grew to support ever more complicated syntax.</p>
+
+<p>In 2009, <code>alester++</code> created the vim-perl repository on Github to consolidat
+Perl support for Vim. <code>perl6.vim</code> gained a new home shortly thereafter
+when he imported it from the Pugs repo. Around the same I discovered
+<a href="https://metacpan.org/pod/Text::VimColor">Text::VimColor</a> and used it to
+create a test harness for the syntax highlighting of <code>perl.vim</code> and
+<code>perl6.vim</code>. I fixed a few Perl 5 highlighting bugs and added some tests
+for them, but I never got around to doing the same for Perl 6.</p>
+
+<p>Since then, a few contributors (<code>hoelzro++</code> et al) have continued to fix
+bugs in <code>perl6.vim</code>. In the meantime, Perl 6 has also evolved, and some
+of the assumptions <code>perl6.vim</code> has made are no longer valid.</p>
+
+<p>A few weeks ago I went to FOSDEM 2015, where Larry announced that this
+Christmas would be The One™. That rekindled my interest in <code>perl6.vim</code>,
+and I&rsquo;d like to share with you some of the progress I&rsquo;ve made with it.</p>
+
+<h3 id="performance">Performance</h3>
+
+<p>Vim 7.4 ships with a <a href="http://vimhelp.appspot.com/syntax.txt.html#%3Asyntime">profiler</a>
+for its syntax highlighting. I used it to identify a lot of inefficient
+patterns in the syntax file. I tried to reduce the use of zero-width
+assertions (lookarounds) and to make more use of
+<a href="http://vimhelp.appspot.com/syntax.txt.html#%3Asyn-nextgroup"><code>nextgroup</code></a>
+instead when possible. I also optimized many patterns to reject matches as
+soon as possible. As a result, Vim now needs to attempt much fewer matches,
+and the ones it does attempt are taking less time to do their work.
+Editing most Perl 6 files feels pretty snappy now, even
+<a href="https://github.com/perl6/std/blob/master/STD.pm6">STD.pm6</a>.</p>
+
+<h3 id="identifiers">Identifiers</h3>
+
+<p>In <code>ftplugin/perl6.vim</code>, I added the apostrophe and high-bit alphabetical
+characters (<code>æóð...</code>) to the list of characters vim recognizes in keywords
+(<a href="http://vimhelp.appspot.com/options.txt.html#%27iskeyword%27"><code>iskeyword</code></a>)
+This allows all valid Perl 6 identifiers to be used in Vim commands that
+depend on matching keywords.</p>
+
+<p>I also cleaned up the highlighting of Perl 6 idenfifiers, in particular
+adding support for the high-bit characters and better support for dashes,
+so these are now highlighted correctly in sub/package/variable/etc names.</p>
+
+<h3 id="multiline-comments">Multiline comments</h3>
+
+<p>These have been updated to recognize the new <code>#&#x60;</code> prefix,
+and to be allowed at the beginning of a line. Previously, multiline comments
+with stacked delimiters (<code>««</code>, <code>&lt;&lt;</code>, <code>&lt;&lt;&lt;</code>, etc) were not highlighted by
+default. Some profiling showed that doing so does not have a noticable
+performance impact, so I changed it to always highlight them.</p>
+
+<h3 id="heredocs">Heredocs</h3>
+
+<p>I added highlighting of heredocs with <code>qto</code>, <code>qqto</code>, <code>q:to</code>, <code>qq:to</code>,
+<code>q:heredoc</code>, and <code>qq:heredoc</code>, for most commonly used delimiters.</p>
+
+<h3 id="setting-functions-and-methods">Setting functions and methods</h3>
+
+<blockquote>
+<p>* TimToady wishes all these highlighters wouldn&rsquo;t treat setting functions and methods as reserved words; they&rsquo;re just functions and methods`</p>
+
+<p>&lt;moritz&gt; TimToady: agreed</p>
+
+<p>* flussence wishes perl6.vim didn&rsquo;t highlight Test.pm functions as reserved words either&hellip;</p>
+</blockquote>
+
+<p>By popular request, I removed highlighting of builtin functions and
+methods. This makes sense since there&rsquo;s no way to avoid highlighting
+user-defined methods that happen to share the name of a builtin one.</p>
+
+<h3 id="metaoperators">Metaoperators</h3>
+
+<p>Highlighting these is one of the trickiest jobs of the syntax file. Yet
+it&rsquo;s one of the most crucial because if you let e.g. a stray <code>R&lt;</code> or
+<code>[/</code> go unhighlighted, they will screw up the highlighting of the rest
+of the file by starting a string where there isn&rsquo;t one.</p>
+
+<p>I managed to make great improvements to the highlighting of reduce
+(<code>[+]</code>), hyper (<code>»+«</code>), post-hyper (<code>@foo».bar</code>), reverse/cross/sequence/zip
+(<code>Rdiv</code>, <code>R&lt;</code>, etc), and set operators (<code>(&lt;)</code>, <code>(&gt;=)</code>). All the spec tests
+for metaoperators I have looked at are now highlighted without issues.</p>
+
+<h3 id="strings-and-patterns">Strings and patterns</h3>
+
+<p>Another part of the language that presents a challenge is <code>/foo/</code>,
+<code>&lt;bar&gt;</code>, <code>&lt;&lt;baz&gt;&gt;</code>, and <code>«quux»</code>. Determining when these are not actually
+numeric division, less-than, or a hyperoperators is tricky. These things
+are now matched much more accurately. I also added support for the <code>qqx</code>
+and <code>qqw</code> operators.</p>
+
+<h3 id="grammars">Grammars</h3>
+
+<p>Grammars are a whole other language in their own right, and this is where
+there is still the most room for improvement (of both performance and
+accuracy) in the syntax file. I still don&rsquo;t know grammars well enough,
+but I&rsquo;ve fixed all the highlighting issues I&rsquo;ve found. STD.pm6 in its
+entirety is now highlighted properly, although Vim can still get confused
+occasionally until you scroll a bit or tell it to redraw the screen.</p>
+
+<h3 id="pod">Pod</h3>
+
+<p>The biggest change here is that I added highlighting of indented Pod
+blocks. As part of the indentifier improvements mentioned above, Pod
+block names containing hyphens or high-bit alphabetical chars are now
+correctly highlighted.</p>
+
+<h3 id="folding">Folding</h3>
+
+<p>I added rudimentary support for syntax-based folding (disabled by default).</p>
+
+<h3 id="miscellaneous">Miscellaneous</h3>
+
+<ul>
+<li>I improved highlighting of numbers and version literals</li>
+<li>Fixed a few issues where interpolated things weren&rsquo;t highlighted as such</li>
+<li>Made big improvements to highlighting of transliteration  (<code>tr///</code>,
+<code>tr{}{}</code>, etc) operators</li>
+<li>Added highlighting of bare/anonymous sigils in more places</li>
+<li>Highlighted the Unicode set operators (<code>∈</code>, <code>≽</code>, et al)</li>
+<li>Certain keywords (like <code>die</code>, <code>state</code>, etc) are no longer highlighted where
+they shouldn&rsquo;t be, e.g. as method calls (<code>$foo.state</code>)</li>
+</ul>
+
+<h3 id="testing">Testing</h3>
+
+<p>Of course, I added tests for every improvement and bugfix listed above, so
+at least the highlighting should not be getting <em>worse</em> from now on.</p>
+
+<h3 id="end">__END__</h3>
+
+<p>All open <a href="https://github.com/vim-perl/vim-perl">vim-perl</a> Github issues
+relating to Perl 6 highlighting bugs have been resolved. If you discover
+any more problems, please open new issues.</p>
+
+<p>I tried patching <a href="https://github.com/perl6/doc">perl6/doc</a> to add an option
+to use Text::VimColor to highlight code blocks in the documentation. While
+it does result in richer and more accurate highlighting than the default
+pygments-based highlighter, it is painfully slow to generate. This is because
+Text::VimColor (and <a href="http://ftp.vim.org/vim/runtime/syntax/2html.vim"><code>2html.vim</code></a>,
+on which it is based) extracts Vim&rsquo;s highlighting by calling the
+<a href="http://vimhelp.appspot.com/eval.txt.html#synID%28%29"><code>synID()</code></a> function
+at every character position in the file, which is very slow. So while it may
+only take Vim a few dozen milliseconds to highlight an entire file,
+extracting the highlighting state into something usable by an external
+tool takes several <em>seconds</em>. I wonder how difficult it would be to patch Vim
+(or NeoVim) to export an entire file&rsquo;s highlighting in a more efficient
+manner&hellip;</p>
+
+<p>To close, here is a sample of some meaningless code that used to get
+<code>perl6.vim</code> confused but just looks nice now:</p>
+
+<p><link rel="stylesheet" type="text/css" href="/css/vim_syntax.css"></p>
+
+<div class="vimcolor"><pre><span class="synKeyword">class</span> Johnny's::Super-Cool::Module<span class="synOperator">;</span>
+
+<span class="synSpecial">my</span> <span class="synIdentifier">$cööl-páttérn</span> <span class="synComment">#`[why hello there]</span> <span class="synOperator">=</span> <span class="synDelimiter">/</span><span class="synString">foo</span><span class="synSpecialChar">+</span><span class="synDelimiter">/</span><span class="synOperator">;</span>
+<span class="synKeyword">sub</span> infix<span class="synOperator">:</span><span class="synDelimiter">«</span><span class="synString">foo</span><span class="synDelimiter">»</span> { }
+
+<span class="synKeyword">sub</span> foo-bar (<span class="synType">Int</span> <span class="synIdentifier">$a</span> <span class="synPreCondit">where</span> <span class="synOperator">*</span> <span class="synOperator">&gt;</span> <span class="synNumber">3</span><span class="synOperator">,</span> <span class="synIdentifier">@bar</span><span class="synOperator">,</span> <span class="synType">Str</span> <span class="synIdentifier">$b</span> <span class="synOperator">=</span> <span class="synDelimiter">'</span><span class="synString">foo</span><span class="synDelimiter">'</span>) {
+    <span class="synSpecial">my</span> <span class="synIdentifier">$document</span> <span class="synOperator">=</span> <span class="synDelimiter">qto/END/</span><span class="synString">;</span>
+<span class="synString">        you there</span>
+<span class="synDelimiter">    END</span>
+
+    <span class="synSpecial">my</span> <span class="synIdentifier">$document</span> <span class="synOperator">=</span> <span class="synDelimiter">qq</span><span class="synOperator">:</span><span class="synString">heredoc</span><span class="synDelimiter">/END/</span><span class="synString">;</span>
+<span class="synString">        and </span><span class="synIdentifier">$b</span>
+<span class="synDelimiter">    END</span>
+
+    <span class="synSpecial">my</span> <span class="synIdentifier">$result</span> <span class="synOperator">=</span> <span class="synDelimiter">qqx/</span><span class="synString">ls -l bla</span><span class="synDelimiter">/</span><span class="synOperator">;</span>
+    <span class="synSpecial">my</span> <span class="synIdentifier">@bla</span> <span class="synOperator">=</span> <span class="synOperator">[+]</span> <span class="synIdentifier">@bar</span><span class="synOperator">;</span>
+    <span class="synSpecial">my</span> <span class="synIdentifier">@list</span> <span class="synOperator">=</span> <span class="synIdentifier">@bla</span> <span class="synOperator">Z,</span> <span class="synIdentifier">@bar</span><span class="synOperator">;</span>
+    say <span class="synDelimiter">&quot;</span><span class="synString">yes</span><span class="synDelimiter">&quot;</span> <span class="synConditional">if</span> <span class="synIdentifier">$set1</span> <span class="synOperator">(&lt;)</span> <span class="synIdentifier">$set2</span><span class="synOperator">;</span>
+
+    <span class="synStatement">=for</span> <span class="synType">Pro-tip</span>
+<span class="synComment">    Pay careful attention to the following code</span>
+
+    <span class="synConditional">if</span> <span class="synIdentifier">$a</span> <span class="synOperator">!&lt;</span> <span class="synNumber">4</span> {
+        <span class="synIdentifier">@bar</span><span class="synOperator">».</span>bla<span class="synOperator">:</span> <span class="synDelimiter">&quot;</span><span class="synString">this </span><span class="synIdentifier">&amp;nice-func</span>()<span class="synString"> thing</span><span class="synDelimiter">&quot;</span><span class="synOperator">;</span>
+    }
+    <span class="synSpecial">my</span> <span class="synIdentifier">$bin</span> <span class="synOperator">=</span> <span class="synNumber">-0</span><span class="synSpecial">b</span><span class="synNumber">01010</span><span class="synOperator">;</span>
+
+    (<span class="synNumber">1</span><span class="synOperator">,</span><span class="synNumber">2</span>)[<span class="synOperator">*/</span><span class="synNumber">2</span>]<span class="synOperator">;</span>
+    say <span class="synIdentifier">$@foo</span><span class="synOperator">.</span>perl<span class="synOperator">;</span>
+    <span class="synDelimiter">m</span><span class="synOperator">:</span><span class="synString">s</span><span class="synDelimiter">/</span><span class="synString">foo</span><span class="synDelimiter">/</span><span class="synIdentifier">$bar</span><span class="synOperator">/;</span>
+}
+
+<span class="synKeyword">sub</span> foo (<span class="synType">Int</span><span class="synOperator">:</span><span class="synString">D</span> <span class="synIdentifier">$bla</span>) <span class="synPreCondit">is</span> <span class="synTag">cached</span> { }
+</pre>
+</div>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/perl6-vim-gets-more-love';
+    var disqus_title = 'perl6.vim gets more love';
+    var disqus_url = 'http:\/\/blog.nix.is\/perl6-vim-gets-more-love';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>literal thoughts</title>
+    <link>http://blog.nix.is/tags/gsoc/index.xml</link>
+    <description>Recent content on literal thoughts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://blog.nix.is/tags/gsoc/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>More docs added</title>
+      <link>http://blog.nix.is/more-docs-added</link>
+      <pubDate>Mon, 17 Aug 2009 23:52:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/more-docs-added</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve added Jonathan Scott Duff&amp;rsquo;s introduction to Perl 6 regexes to Perl6-Doc
+as &lt;code&gt;perlreintro&lt;/code&gt;. In addition I put in a first draft of a &lt;code&gt;perlobjintro&lt;/code&gt;.
+Neither of these correspond to names from the set of Perl 5 man pages, which
+is fitting since they are not directly based on them. So, Perl6-Doc now has
+4 man pages, the aforementioned two as well as &lt;code&gt;perlintro&lt;/code&gt; and &lt;code&gt;perlsyn&lt;/code&gt;. I&amp;rsquo;ll
+be carefully adding to and polishing these in the near future. I&amp;rsquo;m hesitant to
+start on man pages relating to modules, IO, laziness/iterators, and other very
+important features, as the specs (and implementation) for those are still
+shifting heavily from month to month.
+&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been thinking about using the Perl Table Index as initial source material
+for the magical syntax recognition feature, the implementation of which has
+remained elusive for a while. The current implementation is just a proof-of-
+concept with only a few terms as of yet. However, Damian Conway just published
+a significant update to Synopsis 26 on Perl documentation, focused on tying
+docs to code, so it might be time to figure out some Pod-ish source format for
+the terms to be stored in. Writing Pod is a breeze, so it should be easy to
+contribute new terms.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;grok&lt;/code&gt; also needs more love. I&amp;rsquo;m not as happy as I&amp;rsquo;d like to be with some of
+its implementation details, most notably how it picks out functions from
+Synopses 29 and 32, using simple regexes (to be fair, this is exactly what
+good ol&amp;rsquo; &lt;code&gt;perldoc -f&lt;/code&gt; does). It should parse the Pod and pick out parts of the
+document tree instead, I think. There are also still a few visual differences
+between textual output of Pod 5 and Pod 6 that I have to address. Pod 5
+textual output is pleasingly indented (gradually depending on the current
+heading level), which makes it very easy to follow, while Pod 6 is not.&lt;/p&gt;
+
+&lt;p&gt;As a sidenote, I believe I&amp;rsquo;ve found what was causing intermittent FAIL reports
+from CPAN testers. Some machines had a pretty old version of Pod::Simple which
+didn&amp;rsquo;t take well to subclassing. Another failure was caused by an old
+Pod::Parser (deprecated, but relied on by Pod::Xhtml) version which didn&amp;rsquo;t
+recognize &lt;code&gt;=encoding&lt;/code&gt; directives. The relevant distributions now depend on
+newer versions of those troublesome modules.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tagging, FAIL, regexes</title>
+      <link>http://blog.nix.is/tagging-fail-regexes</link>
+      <pubDate>Wed, 29 Jul 2009 19:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/tagging-fail-regexes</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m currently working on making &lt;code&gt;grok&lt;/code&gt; index all &lt;code&gt;X&amp;lt;&amp;gt;&lt;/code&gt; (and maybe &lt;code&gt;C&amp;lt;&amp;gt;&lt;/code&gt;) tags
+in Pod documents. The user will then be able to look them up and see which
+docs contain the search term in question.
+&lt;/p&gt;
+
+&lt;p&gt;Gábor Szabó has already done &lt;a href=&#34;http://perlcabal.org/syn/index_X.html&#34;&gt;something like this&lt;/a&gt;
+for the Perl 6 Synopses. His implementation only looked for formatting codes
+using the standard &lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; format, but I just patched it to look for &lt;code&gt;&amp;lt;&amp;lt; &amp;gt;&amp;gt;&lt;/code&gt;,
+&lt;code&gt;&amp;lt;&amp;lt;&amp;lt; &amp;gt;&amp;gt;&amp;gt;&lt;/code&gt;, and &lt;code&gt;«»&lt;/code&gt; tags as well. Ideally I would like to use a Pod parser to
+get the tags, but it&amp;rsquo;s just using regexes for now. Gábor also asked me to
+have &lt;code&gt;grok&lt;/code&gt; look up the predefined subrules from Synopsis 5, which I think
+would be a good addition.&lt;/p&gt;
+
+&lt;p&gt;For a while, I&amp;rsquo;ve been getting some rare &lt;a href=&#34;http://static.cpantesters.org/distro/G/grok.html&#34;&gt;FAIL reports&lt;/a&gt;
+about &lt;code&gt;grok&lt;/code&gt; from CPAN testers. It seems to be two problems that always
+manifest themselves at the same time. One of them is obviously because the
+tester has an old version of Pod::Parser which doesn&amp;rsquo;t understand the
+&lt;code&gt;=encoding&lt;/code&gt; directive, but the other one is more mysterious. I&amp;rsquo;ll have to do
+some more digging, as I haven&amp;rsquo;t been able to reproduce it on my machines.&lt;/p&gt;
+
+&lt;p&gt;Jonathan Scott Duff pointed me to his unpublished
+&lt;a href=&#34;http://feather.perl6.nl/~duff/articles/perl6/p6-regex.pod&#34;&gt;introduction&lt;/a&gt; to
+Perl 6 regexes which I could use as a starting point for a &lt;code&gt;perlretut&lt;/code&gt; man
+page. I haven&amp;rsquo;t got it into a releasable state yet, but it will soon.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Grok refactor</title>
+      <link>http://blog.nix.is/grok-refactor</link>
+      <pubDate>Fri, 24 Jul 2009 13:30:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-refactor</guid>
+      <description>&lt;p&gt;As the title suggests, I reorganized the &lt;code&gt;grok&lt;/code&gt; a bit, in addition to adding a
+few new features.
+&lt;/p&gt;
+
+&lt;p&gt;The code is now more modular, and much easier to maintain. I added support for
+looking up individual functions/methods from all the chapters of Synopsis 32.
+In other news, Perl6::Doc 0.42 is just out, which includes first drafts of
+&lt;code&gt;perlintro&lt;/code&gt; and &lt;code&gt;perlsyn&lt;/code&gt; documents, which &lt;code&gt;grok&lt;/code&gt; will now find.&lt;/p&gt;
+
+&lt;p&gt;This brings the total number of things known to &lt;code&gt;grok&lt;/code&gt; up by almost a hundred:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ grok -i|wc -l
+613
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>On to the man pages</title>
+      <link>http://blog.nix.is/on-to-the-man-pages</link>
+      <pubDate>Wed, 22 Jul 2009 18:31:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/on-to-the-man-pages</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been working on the &lt;code&gt;perlintro&lt;/code&gt; document found in the pugs
+repository, as well as porting Perl 5&amp;rsquo;s &lt;code&gt;perlsyn&lt;/code&gt;. These are the most &amp;ldquo;basic&amp;rdquo;
+man pages about the language, and should be ported first (especially since
+many of the more specific bits in Perl 6 are still in flux).
+&lt;/p&gt;
+
+&lt;p&gt;As for &lt;code&gt;perlintro&lt;/code&gt;, I can see a few more-than-trivial things that need
+changing. For one thing, the introduction to regular expressions is very
+casual, but Perl 6&amp;rsquo;s regex/grammar support has seen a major overhaul. Simply
+translating the examples to the Perl 6 equivalent seems to just make them
+longer, which gives the wrong impression. Focusing less on quick-and-dirty
+examples and more on the big picture might help the newcomer here, as grammars
+are integral to Perl 6, not just some special strings with weird syntax as
+they were in ol&amp;rsquo; Perl 5.&lt;/p&gt;
+
+&lt;p&gt;A lot of special cases and &amp;ldquo;warts&amp;rdquo; have been replaced with new, exciting
+concepts that show up again and again in Perl (laziness, autothreading, all
+blocks are closures, everything is an object) that need to be touched upon.
+You could say that in Perl 6, the harmony / idiosyncrasy ratio has been
+lowered, and that&amp;rsquo;s a very &lt;strong&gt;good&lt;/strong&gt; thing. Some of these can be saved for
+&lt;code&gt;perlsyn&lt;/code&gt;, but nonetheless, they need to be introduced well.&lt;/p&gt;
+
+&lt;p&gt;In other news, I noticed that &lt;a href=&#34;http://perldoc.perl.org&#34;&gt;perldoc.perl.org&lt;/a&gt; has
+seen a facelift. I wonder if the software behind it might be used to power a
+Perl 6 doc site sometime in the future.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Lucky 0.13</title>
+      <link>http://blog.nix.is/lucky-013</link>
+      <pubDate>Thu, 16 Jul 2009 06:42:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/lucky-013</guid>
+      <description>&lt;p&gt;I just uploaded &lt;code&gt;grok&lt;/code&gt; 0.13 to PAUSE. It has the things I mentioned in my last
+post, plus some bug fixes.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;grok&lt;/code&gt; can look up quite a few things now (527 including documents such as
+Synopses), but many of the answers it provides lack thoroughness. According to
+my project schedule, it&amp;rsquo;s time to start writing new documentation. That means
+I can focus on making these answers better.
+&lt;/p&gt;
+
+&lt;p&gt;I should also write/update a tutorial pretty soon, though I&amp;rsquo;m not exactly sure
+where I&amp;rsquo;ll start. I could update the
+&lt;a href=&#34;http://svn.pugscode.org/pugs/docs/Perl6/Tutorial/perlintro.pod6&#34;&gt;&lt;code&gt;perlintro&lt;/code&gt;&lt;/a&gt;
+in the Pugs repository and add it to Perl6::Doc, or I could use the &lt;a href=&#34;http://svn.pugscode.org/pugs/docs/tutorial/&#34;&gt;Perl 6
+part&lt;/a&gt; of the book &lt;em&gt;Perl 6 and
+Parrot Essentials&lt;/em&gt; which was donated to the Perl Foundation by O&amp;rsquo;Reilly. That
+one is a bit longer, so I might just use it for a more detailed introduction
+(something like Perl 5&amp;rsquo;s &lt;code&gt;perlsyn&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;P.S. Since I&amp;rsquo;ve got the Pod 5 ANSI-color renderer mostly working now, users of
+Perl 5&amp;rsquo;s &lt;code&gt;perldoc&lt;/code&gt; who like colors might want to install Pod::Text::Ansi
+and put the following in their &lt;code&gt;~/.bashrc&lt;/code&gt; (or equivalent):&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #204a87&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;PERLDOC&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;-MPod::Text::Ansi&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Half way there</title>
+      <link>http://blog.nix.is/half-way-there</link>
+      <pubDate>Sat, 11 Jul 2009 01:54:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/half-way-there</guid>
+      <description>&lt;p&gt;With Summer of Code&amp;rsquo;s mid-term evaluations coming up, some interesting things
+are about to happen to &lt;code&gt;grok&lt;/code&gt;. I was contacted by Herbert Breunung, author of
+&lt;a href=&#34;http://search.cpan.org/dist/Perl6-Doc/&#34;&gt;Perl6::Doc&lt;/a&gt; (formerly
+Perl6::Bible), which is a project that shares some of &lt;code&gt;grok&lt;/code&gt;&amp;rsquo;s goals.
+&lt;/p&gt;
+
+&lt;p&gt;He told me that he doesn&amp;rsquo;t have enough time to maintain his project anymore
+and would like some sort of merge to happen. I said I&amp;rsquo;d look into it. His
+project bundles all the Synopses, Apocalypses, Exegeses, and some other Perl 6
+documentation, and ships with a &lt;code&gt;perldoc&lt;/code&gt; wrapper for reading them. What I
+would like to do is to move all documentation out of the &lt;code&gt;grok&lt;/code&gt; distribution
+and update/add more to Perl6::Doc while eliminating the &lt;code&gt;perldoc&lt;/code&gt; wrapper
+(in favor of &lt;code&gt;grok&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;He also brought to my attention the &lt;a href=&#34;http://www.perlfoundation.org/perl6/index.cgi?perl_table_index&#34;&gt;Perl Table Index&lt;/a&gt;,
+a sort of Perl 6 glossary. Ahmad Zawawi has &lt;a href=&#34;http://padre.perlide.org/trac/changeset/5994&#34;&gt;just patched&lt;/a&gt;
+his &lt;a href=&#34;http://search.cpan.org/dist/Padre-Plugin-Perl6/&#34;&gt;Padre::Plugin::Perl6&lt;/a&gt; to
+feed this index to &lt;code&gt;grok&lt;/code&gt;. I will probably port the Perl Table Index to the
+Perl6::Doc distribution and make &lt;code&gt;grok&lt;/code&gt; look things up in it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve started writing a Pod::Text subclass as well as amending
+Perl6::Perldoc::To::Ansi to conform to a consistent color scheme when using
+the default ANSI-colored output.&lt;/p&gt;
+
+&lt;p&gt;Something which &lt;code&gt;grok&lt;/code&gt; should eventually be able to do is recognize arbitrary
+Perl 6 syntax (at very fine level of granularity, that is) and tell you what
+it means. A first stab at this will be to simply include a table of some
+common ones and look those up. Stuff like &lt;code&gt;my&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt;, and so on. Doing this
+reliably is the original inspiration for the u4x project (Userdocs for
+Christmas), of which &lt;code&gt;grok&lt;/code&gt; is a part.&lt;/p&gt;
+
+&lt;p&gt;I hope to make a release of &lt;code&gt;grok&lt;/code&gt; and Perl6::Doc shortly which will include
+all of the above.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>grok 0.09 is out</title>
+      <link>http://blog.nix.is/grok-009-is-out</link>
+      <pubDate>Wed, 01 Jul 2009 19:33:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-009-is-out</guid>
+      <description>&lt;p&gt;The code is starting to take a more stable form. I&amp;rsquo;ve prepended an underscore
+to all private/internal subroutines and documented the rest. Perl authors
+wishing to use &lt;code&gt;grok&lt;/code&gt;&amp;rsquo;s functionality will now have an easier time doing so.
+&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also added various author tests to the distribution to help keep the code
+in shape (or at least remind me when it&amp;rsquo;s not), notably Test::Pod,
+Test::Pod::Coverage, and Test::Perl::Critic.&lt;/p&gt;
+
+&lt;p&gt;Since my last blog post, &lt;code&gt;grok&lt;/code&gt; has gained a few features. It can print the
+name of the target file (like &lt;code&gt;perldoc -l&lt;/code&gt;), print an index of known
+documentation files, output xhtml, and detect whether the target file has Pod
+5 or Pod 6 in it. It&amp;rsquo;s also got some Win32 fixes and more informative error
+messages.&lt;/p&gt;
+
+&lt;p&gt;Pretty soon I will start bringing in some more docs to bundle with it.
+Tutorials and such. I will also most likely implement function documentation
+lookup (like &lt;code&gt;perldoc -f&lt;/code&gt;) in grok.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>grok update</title>
+      <link>http://blog.nix.is/grok-update</link>
+      <pubDate>Fri, 26 Jun 2009 05:54:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-update</guid>
+      <description>&lt;p&gt;Some things have kept me very busy lately and I&amp;rsquo;m a bit behind on my GSoC
+schedule. I&amp;rsquo;m starting to catch up now, though.
+&lt;/p&gt;
+
+&lt;p&gt;First of all, as of version 0.05, you can now easily install &lt;code&gt;grok&lt;/code&gt; from the
+command line on most operating systems like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cpanp -i App::Grok
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It can handle Pod 5 files now (via Pod::Text) as well (which most of the
+Perl 6 Synopses are written in). The ANSI-colored output looks a bit different
+than the Pod 6 output because Pod::Text is very conservative in its use of
+colors. I&amp;rsquo;ll probably make them more similar later to keep it consistent.&lt;/p&gt;
+
+&lt;p&gt;When called interactively, &lt;code&gt;grok&lt;/code&gt; now uses your system&amp;rsquo;s pager to view the
+output by default.&lt;/p&gt;
+
+&lt;p&gt;It will now treat an argument as a Pod 6 file to read if said argument doesn&amp;rsquo;t
+match a known documentation target. As for the targets, the only known ones so
+far are the synopses (which are bundled with &lt;code&gt;grok&lt;/code&gt; for now), so you can do
+things like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ grok s02
+$ grok s32-rules
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>First GSoC post</title>
+      <link>http://blog.nix.is/first-gsoc-post</link>
+      <pubDate>Wed, 27 May 2009 17:25:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/first-gsoc-post</guid>
+      <description>&lt;p&gt;I officially started on my Google Summer of Code project (project details
+&lt;a href=&#34;http://nix.is/gsoc/&#34;&gt;here&lt;/a&gt;) last weekend.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been tasked with writing a &lt;code&gt;perldoc&lt;/code&gt; equivalent for Perl 6. I&amp;rsquo;ve decided
+to write it in Perl 5 for now, since it&amp;rsquo;s already got Perl6::Perldoc, which
+is a fast and feature-complete parser for the Perl 6 version of Pod (see
+&lt;a href=&#34;http://perlcabal.org/syn/S26.html&#34;&gt;specification&lt;/a&gt;), as well as lots of other
+useful CPAN modules which I won&amp;rsquo;t have to rewrite in Perl 6 (yet).
+&lt;/p&gt;
+
+&lt;p&gt;The program will be called &lt;code&gt;grok&lt;/code&gt;
+(&lt;a href=&#34;http://github.com/hinrik/grok&#34;&gt;repository&lt;/a&gt;). So far it&amp;rsquo;s just a barebones
+command-line reader for Pod 6, but I did create an ANSI-colored terminal
+renderer for Perl6::Perldoc. It might be too colorful for some people&amp;rsquo;s
+taste currently, so maybe I&amp;rsquo;ll tone it down a little. I think Ruby&amp;rsquo;s &lt;code&gt;ri&lt;/code&gt;
+documentation reader is the only such tool which colors the output, and I
+thought it was a nice enough feature (one of many!) to copy. I&amp;rsquo;ve also been
+looking at &lt;code&gt;pydoc&lt;/code&gt; and &lt;code&gt;javadoc&lt;/code&gt; in search of interesting features to
+implement.&lt;/p&gt;
+
+&lt;p&gt;The plan is to make it more modern and extensive than &lt;code&gt;perldoc&lt;/code&gt;. One
+interesting thing I might end up doing is making use of STD (the standard
+Perl 6 grammar) to parse arbitrary syntax, so you could do stuff like &lt;code&gt;grok
+&#39;[*]&#39;&lt;/code&gt; and the program would tease the expression apart and show you
+documentation for both the &lt;code&gt;[]&lt;/code&gt; and the &lt;code&gt;*&lt;/code&gt; operators.&lt;/p&gt;
+
+&lt;p&gt;Some portion of the project also includes writing new documentation for Perl
+6. I haven&amp;rsquo;t written any yet, but I bet it will be fun. Before doing so, we
+first have to figure out how to organize the the docs. Since Perl 6 is a
+specification, it&amp;rsquo;s not as obvious as with Perl 5, where the docs are included
+(sometimes inline) with the implementation.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>More docs added - literal thoughts</title>
+<meta property="og:title" content="More docs added - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">More docs added</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/gsoc">gsoc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">August 8, 2009</span>
+    
+
+    <div class="article-content">
+      <p>I&rsquo;ve added Jonathan Scott Duff&rsquo;s introduction to Perl 6 regexes to Perl6-Doc
+as <code>perlreintro</code>. In addition I put in a first draft of a <code>perlobjintro</code>.
+Neither of these correspond to names from the set of Perl 5 man pages, which
+is fitting since they are not directly based on them. So, Perl6-Doc now has
+4 man pages, the aforementioned two as well as <code>perlintro</code> and <code>perlsyn</code>. I&rsquo;ll
+be carefully adding to and polishing these in the near future. I&rsquo;m hesitant to
+start on man pages relating to modules, IO, laziness/iterators, and other very
+important features, as the specs (and implementation) for those are still
+shifting heavily from month to month.
+</p>
+
+<p>I&rsquo;ve been thinking about using the Perl Table Index as initial source material
+for the magical syntax recognition feature, the implementation of which has
+remained elusive for a while. The current implementation is just a proof-of-
+concept with only a few terms as of yet. However, Damian Conway just published
+a significant update to Synopsis 26 on Perl documentation, focused on tying
+docs to code, so it might be time to figure out some Pod-ish source format for
+the terms to be stored in. Writing Pod is a breeze, so it should be easy to
+contribute new terms.</p>
+
+<p><code>grok</code> also needs more love. I&rsquo;m not as happy as I&rsquo;d like to be with some of
+its implementation details, most notably how it picks out functions from
+Synopses 29 and 32, using simple regexes (to be fair, this is exactly what
+good ol&rsquo; <code>perldoc -f</code> does). It should parse the Pod and pick out parts of the
+document tree instead, I think. There are also still a few visual differences
+between textual output of Pod 5 and Pod 6 that I have to address. Pod 5
+textual output is pleasingly indented (gradually depending on the current
+heading level), which makes it very easy to follow, while Pod 6 is not.</p>
+
+<p>As a sidenote, I believe I&rsquo;ve found what was causing intermittent FAIL reports
+from CPAN testers. Some machines had a pretty old version of Pod::Simple which
+didn&rsquo;t take well to subclassing. Another failure was caused by an old
+Pod::Parser (deprecated, but relied on by Pod::Xhtml) version which didn&rsquo;t
+recognize <code>=encoding</code> directives. The relevant distributions now depend on
+newer versions of those troublesome modules.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/more-docs-added';
+    var disqus_title = 'More docs added';
+    var disqus_url = 'http:\/\/blog.nix.is\/more-docs-added';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

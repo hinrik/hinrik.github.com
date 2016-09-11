@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>Theming the Linux console - literal thoughts</title>
+<meta property="og:title" content="Theming the Linux console - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Theming the Linux console</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/linux">linux</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">April 4, 2008</span>
+    
+
+    <div class="article-content">
+      <p>While messing with my Linux console recently, I stumbled upon the
+<a href="http://kerneltrap.org/man/linux/man4/console_codes.4">console_codes(4)</a> man
+page. Apparently there are Linux-specific escape codes to redefine the color
+palette. Awesome! I&rsquo;ve always preferred the
+<a href="http://uwstopia.nl/blog/2006/07/tango-terminal">&ldquo;Tango&rdquo; terminal palette</a>
+that recently became the default in <code>gnome-terminal</code>. Now I can use it
+outside of X.
+</p>
+
+<p>Everybody likes screenshots: <a href="/console-before.png">before</a> and
+<a href="/console-after.png">after</a>.</p>
+
+<p><strong>Update:</strong> Apparently <a href="http://en.wikipedia.org/wiki/PuTTY">PuTTY</a> supports
+these escapes as well.</p>
+
+<p>Using the escape codes to change the palette is quite laborious, so I decided
+to write a small program to make it easier to switch between various palettes.
+You can find it <a href="http://search.cpan.org/dist/App-ConPalette">here</a>.</p>
+
+<p>There is one problem though. The Linux console doesn&rsquo;t allow you to set the
+default foreground/backround colors independently of the color palette, as you
+can do in most GUI terminal emulators. In the absence of any ANSI color
+espaces, Linux uses the first and last colors of the palette for the
+background and foreground (text), respectively. This means that if I were to
+reuse the Tango palette verbatim in the Linux console, the background would be
+dark grey and the text would be almost white. This makes man pages harder to
+read, and I prefer a black background with medium gray text anyway, as is the
+default in the Linux console. To solve this, I created a palette called
+&ldquo;tango-dark&rdquo; with the first color black and the last color medium grey, and
+called the unmodified palette &ldquo;tango-light&rdquo;.</p>
+
+<p>In addition to the <code>gnome-terminal</code> palettes (rxvt, tango, xterm), I also
+added KDE Konsole&rsquo;s palette, as well as the color palette used by the
+<a href="http://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes#ZX_Spectrum">Sinclair Spectrum</a>,
+since it mostly fits the ANSI palette (it has black listed twice, so I
+replaced one with a dark grey color, which it was missing).</p>
+
+<p>So, assuming Perl is installed, the program can be installed on most
+distributions in the following manner:</p>
+
+<pre><code>$ cpan -i App::ConPalette
+</code></pre>
+
+<p>Then do:</p>
+
+<pre><code>$ conpalette --help
+</code></pre>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/theming-the-linux-console';
+    var disqus_title = 'Theming the Linux console';
+    var disqus_url = 'http:\/\/blog.nix.is\/theming-the-linux-console';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

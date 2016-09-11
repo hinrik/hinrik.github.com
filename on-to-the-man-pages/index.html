@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>On to the man pages - literal thoughts</title>
+<meta property="og:title" content="On to the man pages - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">On to the man pages</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/gsoc">gsoc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">July 7, 2009</span>
+    
+
+    <div class="article-content">
+      <p>This week I&rsquo;ve been working on the <code>perlintro</code> document found in the pugs
+repository, as well as porting Perl 5&rsquo;s <code>perlsyn</code>. These are the most &ldquo;basic&rdquo;
+man pages about the language, and should be ported first (especially since
+many of the more specific bits in Perl 6 are still in flux).
+</p>
+
+<p>As for <code>perlintro</code>, I can see a few more-than-trivial things that need
+changing. For one thing, the introduction to regular expressions is very
+casual, but Perl 6&rsquo;s regex/grammar support has seen a major overhaul. Simply
+translating the examples to the Perl 6 equivalent seems to just make them
+longer, which gives the wrong impression. Focusing less on quick-and-dirty
+examples and more on the big picture might help the newcomer here, as grammars
+are integral to Perl 6, not just some special strings with weird syntax as
+they were in ol&rsquo; Perl 5.</p>
+
+<p>A lot of special cases and &ldquo;warts&rdquo; have been replaced with new, exciting
+concepts that show up again and again in Perl (laziness, autothreading, all
+blocks are closures, everything is an object) that need to be touched upon.
+You could say that in Perl 6, the harmony / idiosyncrasy ratio has been
+lowered, and that&rsquo;s a very <strong>good</strong> thing. Some of these can be saved for
+<code>perlsyn</code>, but nonetheless, they need to be introduced well.</p>
+
+<p>In other news, I noticed that <a href="http://perldoc.perl.org">perldoc.perl.org</a> has
+seen a facelift. I wonder if the software behind it might be used to power a
+Perl 6 doc site sometime in the future.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/on-to-the-man-pages';
+    var disqus_title = 'On to the man pages';
+    var disqus_url = 'http:\/\/blog.nix.is\/on-to-the-man-pages';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+
