@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>literal thoughts</title>
+    <link>http://blog.nix.is/tags/books/index.xml</link>
+    <description>Recent content on literal thoughts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://blog.nix.is/tags/books/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Perl book (mini) reviews</title>
+      <link>http://blog.nix.is/perl-book-mini-reviews</link>
+      <pubDate>Sun, 04 May 2008 21:33:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/perl-book-mini-reviews</guid>
+      <description>&lt;p&gt;I much prefer reading things in well typeset paperback books than on computer
+screens. The subject of Perl is no exception. I&amp;rsquo;ve got quite a few Perl books.
+Some reviews are in order. I haven&amp;rsquo;t actually written a book review in many
+years, so they won&amp;rsquo;t be very &amp;ldquo;in-depth&amp;rdquo;, though.&lt;/p&gt;
+
+&lt;p&gt;Oh, and by the way, this, too, &lt;a href=&#34;http://use.perl.org/~schwern/journal/36263&#34;&gt;is a Perl blog&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;style&gt;.book-pic { float: right; padding: 10px; }&lt;/style&gt;
+
+&lt;h2 id=&#34;programming-perl&#34;&gt;Programming Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/progperl.png&#34; alt=&#34;Programming Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Larry Wall, Tom Christiansen, and Jon Orwant&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Ah, the Camel book. The latest edition is about 7 years old now, but it has
+stood the test of time. If you only read one Perl book, make it this one.
+Aside from being a comprehensive and detailed reference on the language, it&amp;rsquo;s
+also funny. One of my favorite passages is the start of chapter 10, Packages:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In this chapter, we get to start having fun, because we get to start
+talking about software design. If we&amp;rsquo;re going to talk about good software
+design, we have to talk about Laziness, Impatience, and Hubris, the basis
+of good software design.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ve all fallen into the trap of using cut-and-paste when we should have
+defined a higher-level abstraction, if only just a loop or a subroutine.*&lt;/p&gt;
+
+&lt;p&gt;To be sure, some folks have gone to the opposite extreme of defining
+ever-growing mounds of higher-level abstractions when they should have
+used cut-and-paste.† Generally, though, most of us need to think about
+using more abstraction rather than less.&lt;/p&gt;
+
+&lt;p&gt;Caught somewhere in the middle are the people who have a balanced view of
+how much abstraction is good, but who jump the gun on writing their own
+abstractions when they should be reusing existing code.‡&lt;/p&gt;
+
+&lt;p&gt;――――――――――&lt;/p&gt;
+
+&lt;p&gt;* This is a form of False Laziness.&lt;/p&gt;
+
+&lt;p&gt;† This is a form of False Hubris.&lt;/p&gt;
+
+&lt;p&gt;‡ You guessed it — this is False Impatience. But if you&amp;rsquo;re determined to
+reinvent the wheel, at least try to invent a better one.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The book is written for programmers, so if you&amp;rsquo;ve haven&amp;rsquo;t programmed before,
+you should probably start with an easier book. I&amp;rsquo;ve heard &amp;ldquo;Learning Perl&amp;rdquo; is
+pretty good.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-perl-cookbook&#34;&gt;The Perl Cookbook&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlcookbook.png&#34; alt=&#34;Perl Cookbook&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Tom Christiansen and Nathan Torkington&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is another highly useful book. If you read the Camel book and thought
+&amp;ldquo;What next?&amp;rdquo;, then this book is the answer. It&amp;rsquo;s got 900 pages of recipes for
+how to do everything from sorting hashes to writing pre-forking TCP servers.
+Each one of the 22 chapters begins with a few pages of very informative
+discussion of the problem domain at hand. This book has been extremely useful
+to me. It saves you a lot of Googling and looking through various Perl man
+pages. I highly recommend it.&lt;/p&gt;
+
+&lt;h2 id=&#34;mastering-regular-expressions&#34;&gt;Mastering Regular Expressions&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/masteringregex.png&#34; alt=&#34;Mastering Regular Expressions&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jeffrey Friedl&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;While not strictly a Perl book, it is about regular expressions, which were
+to a large extent popularized by Perl. Or the other way around. Or both. I&amp;rsquo;m
+not sure. But hey, at least the chapter on Perl is the longest one in the
+book.&lt;/p&gt;
+
+&lt;p&gt;Anyway, the book truly lives up to its title. It describes in detail how
+regular expression engines work, how to write effecient expressions, how
+programming languages support regexes, and more. Until I read this book, I did
+not know that there are two main approaches to writing a regular expression
+engine, a DFA (deterministic finite automaton) and an NFA (nondeterministic
+finite automaton), or that the fastest way to strip leading and trailing
+whitespace is (usually) like so:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;s/^\s+//&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #4e9a06&#34;&gt;s/s+$//&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I hadn&amp;rsquo;t actually learned Perl before getting this book. Perl is used in most
+of the examples in the book, which is what got me interested in the language.&lt;/p&gt;
+
+&lt;h2 id=&#34;mastering-algorithms-with-perl&#34;&gt;Mastering Algorithms with Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/masteringalgorithms.png&#34; alt=&#34;Mastering Algorithms with Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jon Orwant, Jarkko Hietaniemi, and John Macdonald&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not a computer scientist. Perhaps that&amp;rsquo;s why I found this book so
+interesting. It has working Perl code accompanying all the algorithms that
+are explained in the book, as well as discussions of pertinent CPAN modules.
+Though I suspect that last part might be a bit outdated, as the book was
+written almost a decade ago. If you know Perl and would like a hands-on
+introduction to algorithms, this book is great.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-best-practices&#34;&gt;Perl Best Practices&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlbestpractices.png&#34; alt=&#34;Perl Best Practices&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Damian Conway&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I liked this book. I like my code especially clean and readable, and this book
+has very good guidelines that can help achieve that. The book is a joy to read
+(it has humour!), and it&amp;rsquo;s got very useful appendices at the end with quick
+summaries of all the guidelines. Then, if you want to audit your source code
+according to some of these (and other) guidelines, you can use the excellent
+&lt;a href=&#34;http://search.cpan.org/dist/Perl-Critic/&#34;&gt;Perl::Critic&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-hacks&#34;&gt;Perl Hacks&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlhacks.png&#34; alt=&#34;Perl Hacks&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By &lt;code&gt;chromatic&lt;/code&gt;, Damian Conway, and Curtis &amp;ldquo;Ovid&amp;rdquo; Poe&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This one is sort of like The Perl Cookbook, except it focuses more on the
+process of working with Perl rather than specific solutions to various
+programmatic problems. As such, it&amp;rsquo;s not really aimed at beginners. It has
+many very useful tricks regarding things like customizing your editor for
+Perl, working with modules, (ab)using the guts of Perl, and debugging.
+There&amp;rsquo;s something in it for everyone.&lt;/p&gt;
+
+&lt;h2 id=&#34;higher-order-perl&#34;&gt;Higher-Order Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/higherorderperl.png&#34; alt=&#34;Higher Order Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Mark Jason Dominus&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Now&lt;/em&gt; it&amp;rsquo;s getting interesting. In this book, the author tries to familiarize
+the reader with ways of programming most common in purely functional
+languages like Lisp and Haskell. That makes it very different from most Perl
+books (in a good way). The book is all about &amp;ldquo;being clever&amp;rdquo; as the author has
+said, so you&amp;rsquo;re bound to learn something from it. I certainly have. The topics
+covered include recursion, dispatch tables, currying, and parsing, to name a
+few. There are &lt;a href=&#34;http://hop.perl.plover.com/#free&#34;&gt;plans&lt;/a&gt; to turn the book into
+wiki, but I I&amp;rsquo;m not sure when that&amp;rsquo;ll happen.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-6-and-parrot-essentials&#34;&gt;Perl 6 and Parrot Essentials&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perl6andparrot.png&#34; alt=&#34;Perl 6 and Parrot Essentials&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Allison Randal, Dan Sugalski, and Leopold Toetsch&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This book is an excellent introduction to Perl 6 and Parrot (the virtual
+machine which will run Perl 6), though I&amp;rsquo;ve been told that the Parrot bits
+are a little dated now. I read it in one sitting, it was that exciting. I
+realize that his book is about programming, and that this statement makes me
+a total geek. Oh well, there&amp;rsquo;s no looking back, Perl 6 will be awesome! The
+first half of the book covers the Perl 6 language, while the second covers
+the design of Parrot. I didn&amp;rsquo;t absorb as much as I could have from the second
+half as I don&amp;rsquo;t know much about parsing or compilers, but the first half more
+than made up for it. I really wish I could use all those nifty featues in my
+code right now. In the meantime, &lt;a href=&#34;http://en.wikipedia.org/wiki/Pugs&#34;&gt;Pugs&lt;/a&gt;
+will have to quence the thirst of those like me who are excited about Perl 6.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-6-now&#34;&gt;Perl 6 Now&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perl6now.png&#34; alt=&#34;Perl 6 Now&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Scott Walters&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I didn&amp;rsquo;t get much out of this book. For
+one, many things are explained which most Perl users already know, so I
+flipped over many pages while reading it. Secondly, many of the Perl 6 ideas
+are illustrated with modules that use source filters, which are known to be
+unreliable, so you definitely wouldn&amp;rsquo;t use them in production code.&lt;/p&gt;
+
+&lt;h2 id=&#34;catalyst&#34;&gt;Catalyst&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/catalyst.png&#34; alt=&#34;Catalyst&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jonathan Rockway&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The chapters in this book follow a very &lt;em&gt;practical&lt;/em&gt; approach, diving right in
+and showing you various common ways of using Catalyst. I haven&amp;rsquo;t written much
+using this fine web framework, so there isn&amp;rsquo;t really much more I can say about
+the content of the book. I can say something about the &lt;em&gt;lack&lt;/em&gt; of content
+though. This book is missing an overview of Catalyst, and a better explanation
+of how all the parts fits together. Some discussion on the MVC architecture
+and how Catalyst implements it would have been nice as well. Seeing as the
+book is quite short, there would be plenty of room for these things.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-medic&#34;&gt;Perl Medic&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlmedic.png&#34; alt=&#34;Perl Medic&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Peter J. Scott&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I was not disappointed by this book. It delivers what is promised. Having
+recently started working on an old codebase, I found the book very useful.
+Testing, refactoring, benchmarking, debugging; all these things are well laid
+out by the author. It also has a useful chapter on upgrading code written for
+older versions on Perl, and discusses how to make use of newer features.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

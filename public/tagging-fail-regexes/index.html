@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>Tagging, FAIL, regexes - literal thoughts</title>
+<meta property="og:title" content="Tagging, FAIL, regexes - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Tagging, FAIL, regexes</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/gsoc">gsoc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">July 7, 2009</span>
+    
+
+    <div class="article-content">
+      <p>I&rsquo;m currently working on making <code>grok</code> index all <code>X&lt;&gt;</code> (and maybe <code>C&lt;&gt;</code>) tags
+in Pod documents. The user will then be able to look them up and see which
+docs contain the search term in question.
+</p>
+
+<p>Gábor Szabó has already done <a href="http://perlcabal.org/syn/index_X.html">something like this</a>
+for the Perl 6 Synopses. His implementation only looked for formatting codes
+using the standard <code>&lt;&gt;</code> format, but I just patched it to look for <code>&lt;&lt; &gt;&gt;</code>,
+<code>&lt;&lt;&lt; &gt;&gt;&gt;</code>, and <code>«»</code> tags as well. Ideally I would like to use a Pod parser to
+get the tags, but it&rsquo;s just using regexes for now. Gábor also asked me to
+have <code>grok</code> look up the predefined subrules from Synopsis 5, which I think
+would be a good addition.</p>
+
+<p>For a while, I&rsquo;ve been getting some rare <a href="http://static.cpantesters.org/distro/G/grok.html">FAIL reports</a>
+about <code>grok</code> from CPAN testers. It seems to be two problems that always
+manifest themselves at the same time. One of them is obviously because the
+tester has an old version of Pod::Parser which doesn&rsquo;t understand the
+<code>=encoding</code> directive, but the other one is more mysterious. I&rsquo;ll have to do
+some more digging, as I haven&rsquo;t been able to reproduce it on my machines.</p>
+
+<p>Jonathan Scott Duff pointed me to his unpublished
+<a href="http://feather.perl6.nl/~duff/articles/perl6/p6-regex.pod">introduction</a> to
+Perl 6 regexes which I could use as a starting point for a <code>perlretut</code> man
+page. I haven&rsquo;t got it into a releasable state yet, but it will soon.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/tagging-fail-regexes';
+    var disqus_title = 'Tagging, FAIL, regexes';
+    var disqus_url = 'http:\/\/blog.nix.is\/tagging-fail-regexes';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

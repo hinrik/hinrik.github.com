@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>literal thoughts</title>
+    <link>http://blog.nix.is/tags/irc/index.xml</link>
+    <description>Recent content on literal thoughts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://blog.nix.is/tags/irc/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>POE::Component::IRC 6.00 is here</title>
+      <link>http://blog.nix.is/poe-component-irc-600-is-here</link>
+      <pubDate>Thu, 05 Mar 2009 03:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/poe-component-irc-600-is-here</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://search.cpan.org/dist/POE-Component-IRC&#34;&gt;POE::Component::IRC&lt;/a&gt; version
+6.00 has just been released on CPAN. I&amp;rsquo;ve neglected to blog about PoCo::IRC
+since I started contributing to it, but since a new major release has been
+rolled out[1], now would be a good time. Also, as it turns out, next May will
+be the tenth anniversary of the project&amp;rsquo;s first release.
+&lt;/p&gt;
+
+&lt;p&gt;For the uninitiated, POE::Component::IRC is an event-driven IRC client library
+built on top of POE. People mostly use it to write bots. Some have made that
+even easier by creating a simpler interface suited to that task (see
+Bot::BasicBot).&lt;/p&gt;
+
+&lt;p&gt;I became involved in the project about 14 months ago, fixing bugs and adding
+features. There&amp;rsquo;ve been about 50 releases during that time, so there&amp;rsquo;s
+something for everybody. Following is a list of the most prominent ones.&lt;/p&gt;
+
+&lt;h3 id=&#34;important-squashed-bugs&#34;&gt;Important squashed bugs&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Quite a few DCC-related bugs have been fixed, error handling and diagnostics have been improved.&lt;/li&gt;
+&lt;li&gt;A bug causing the NickReclaim plugin to only try to reclaim the nick once has been fixed.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State was reacting incorrectly to some WHO replies sent by IRC servers that veered from the RFCs, causing it to hold inconsistent information. This has been fixed.&lt;/li&gt;
+&lt;li&gt;When raw messages were enabled, the raw line was not provided with CTCP-related events. Fixed.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State would issue more WHO commands than necessary when another user would join more than one of the component&amp;rsquo;s channels. No more.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;new-major-features&#34;&gt;New major features&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;POE::Component::IRC::Common, which provides many helper functions, now has functions for identifying and stripping color/formatting from IRC messages. It also defines IRC color constants for use in messages.&lt;/li&gt;
+&lt;li&gt;We now handle FreeNode&amp;rsquo;s IDENTIFY-MSG capability, which means that can you always know whether a user had identified with NickServ when s/he wrote a particular message.&lt;/li&gt;
+&lt;li&gt;Sending and receiving files with spaces in them over DCC is now supported.&lt;/li&gt;
+&lt;li&gt;All DCC-related events now provide the IP address of the peer.&lt;/li&gt;
+&lt;li&gt;DCC resume support has been implemented.&lt;/li&gt;
+&lt;li&gt;The BotTraffic plugin now send an event for every CTCP ACTION issued by the client.&lt;/li&gt;
+&lt;li&gt;We now guard against sending IRC protocol messages that are too long and might get us booted off the server.&lt;/li&gt;
+&lt;li&gt;The Connector plugin (takes care of maintaining the connection to the IRC server) now supports cycling through a list of servers when reconnecting.&lt;/li&gt;
+&lt;li&gt;The CTCP plugin can now respond to CTCP SOURCE requests for you.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State and can now track the away status of users for you.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State now keeps track of a channel&amp;rsquo;s creation time.&lt;/li&gt;
+&lt;li&gt;Added NICKSERV, SERVLIST, and SQUERY commands.&lt;/li&gt;
+&lt;li&gt;Plugins can now respond to custom events which have not been explicitly defined by POE::Component::IRC.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;new-plugins&#34;&gt;New plugins&lt;/h3&gt;
+
+&lt;p&gt;I wrote 5 additional core plugins:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;First of all, the &lt;strong&gt;Logger&lt;/strong&gt; plugin. It logs channel/private/dcc chat activity to files on disk like normal IRC clients do.&lt;/li&gt;
+&lt;li&gt;Then there&amp;rsquo;s &lt;strong&gt;AutoJoin&lt;/strong&gt;, which takes care of keeping you on your favorite channels, whatever happens.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NickServID&lt;/strong&gt; deals with identifying your user to NickServ.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;CycleEmpty&lt;/strong&gt; plugin which reclaims ops on channels that become empty.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BotCommand&lt;/strong&gt;, which allows you to register commands that your bot handles, and get back an appropriate event when one is issued.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;testing&#34;&gt;Testing&lt;/h3&gt;
+
+&lt;p&gt;The test suite has been reorganized, many tests improved and more added. The
+test coverage (as reported by Devel::Cover) has increased from 40% (version
+5.48) to 61% (version 6.00).&lt;/p&gt;
+
+&lt;h3 id=&#34;refactoring&#34;&gt;Refactoring&lt;/h3&gt;
+
+&lt;p&gt;Much refactoring was done. The coding and indenting style has also been made
+consistent across the project, and many spotty coding practices have been
+eliminated (thanks, Perl::Critic).&lt;/p&gt;
+
+&lt;p&gt;POE::Filter::CTCP was merged with POE::Filter::IRC:Compat, and the former was
+removed. DCC support has been moved into its own plugin, and the plugin system
+itself has been ripped out in favor of POE::Component::Pluggable (which is
+based on the aforementioned plugin system).&lt;/p&gt;
+
+&lt;p&gt;Using the project&amp;rsquo;s current Perl::Critic parameters, version 6.00 has zero
+policy violations in 11,791 lines of code, compared to version 5.48&amp;rsquo;s 242
+violations in 10,634 lines of code. The average
+&lt;a href=&#34;http://en.wikipedia.org/wiki/Cyclomatic_complexity&#34;&gt;McCabe&lt;/a&gt; score of
+subroutines also dropped from 4.21 to 3.45.&lt;/p&gt;
+
+&lt;h3 id=&#34;documentation&#34;&gt;Documentation&lt;/h3&gt;
+
+&lt;p&gt;Last but not least, the Pod docs have been improved. Errors have been fixed,
+much more formatting and linking has been added for easier reading and
+browsing, consistency has been improved, and many sections have been expanded.&lt;/p&gt;
+
+&lt;p&gt;I also added a
+&lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC::Cookbook&#34;&gt;cookbook&lt;/a&gt; with
+a few recipes showing off some of the things one can do with
+POE::Component::IRC.&lt;/p&gt;
+
+&lt;h3 id=&#34;credits&#34;&gt;Credits&lt;/h3&gt;
+
+&lt;p&gt;Thanks to all the users who provided feedback, bug reports and patches. You
+helped make this happen. I also couldn&amp;rsquo;t have done many of these things
+without the help of Chris &amp;lsquo;BinGOs&amp;rsquo; Williams, the senior maintainer of
+POE::Component::IRC.&lt;/p&gt;
+
+&lt;p&gt;Now go write some IRC bots (or clients)!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Notes:&lt;/em&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;It&amp;rsquo;s actually quite an insignificant release. Historically,
+POE::Component::IRC versions have always passed the whole-number boundaries
+naturally as part of a regular &amp;ldquo;bump the version number up by 0.02 for the
+next release&amp;rdquo; process.&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>Spicing up IRC with MegaHAL</title>
+      <link>http://blog.nix.is/spicing-up-irc-with-megahal</link>
+      <pubDate>Fri, 29 Aug 2008 04:45:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/spicing-up-irc-with-megahal</guid>
+      <description>&lt;p&gt;I released &lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC::Plugin::MegaHAL&#34;&gt;POE::Component::IRC::Plugin::MegaHAL&lt;/a&gt;
+the other day, a &lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC&#34;&gt;POE::Component::IRC&lt;/a&gt;
+plugin for the esteemed and humorous conversation simulator known as
+&lt;a href=&#34;http://megahal.alioth.debian.org/&#34;&gt;MegaHAL&lt;/a&gt;. This makes it very easy to add a
+MegaHAL brain to an IRC bot. I wrote one and fed him IRC logs of a channel
+that I frequent, then let him loose online (he&amp;rsquo;s a &amp;ldquo;he&amp;rdquo; because the IRC logs
+primarily include ramblings from male users). Some examples of his brilliance
+follow.
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;failo&amp;gt; Or maybe it&#39;s about sexual liberation and not perl &amp;amp; python.
+&amp;lt;failo&amp;gt; Yes, printing passport photos at home is surely a sign of a flock of aids infected prisoners with big sloppy dicks.
+&amp;lt;failo&amp;gt; I heard failo is a fact of evolution that cannot be shown because it looks like he knows what electricity is
+&amp;lt;failo&amp;gt; Fucking get your cock out and jerk each other off in proportion to how much dexter&#39;s wedding dinner is going your way
+&amp;lt;failo&amp;gt; Sir you had me at &amp;quot;balls.&amp;quot;
+&amp;lt;failo&amp;gt; Every porn dvd has a &amp;quot;grill setting&amp;quot;
+&amp;lt;failo&amp;gt; So only 2% of americans also believe that the government is composed of thong-wearing oiled-up muscle boys.
+&amp;lt;failo&amp;gt; Increased struggling from the bees made honey in the darkened cubicle, waiting for another musky man-pole to probe its way through the light to go mushroom hunting with me
+&amp;lt;failo&amp;gt; I bet all drug users keep a human skull on their myspace page.
+&amp;lt;failo&amp;gt; Earle: everybody&#39;s gay for a prison system in which millions of our descendants murder each other in prison.
+&amp;lt;failo&amp;gt; Either you&#39;re gay or associated with all drugs.
+&amp;lt;failo&amp;gt; The war on polarbears is going to cum buckets into my gaping /dev/null.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m afraid these results say more about the quality of conversation in this
+channel than they do about anything else&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IRC and character encoding</title>
+      <link>http://blog.nix.is/irc-and-character-encoding</link>
+      <pubDate>Thu, 01 May 2008 01:44:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/irc-and-character-encoding</guid>
+      <description>&lt;p&gt;A while ago, I wrote an IRC logger for
+&lt;a href=&#34;http://search.cpan.org/dist/POE-Component-IRC/&#34;&gt;POE::Component::IRC&lt;/a&gt;, which
+is an IRC client module for Perl. The main challenge I faced was the issue of
+character encodings. Since IRC is ripe with clients that use different
+encodings, messages must be reliably decoded before they are written to a
+file.
+&lt;/p&gt;
+
+&lt;p&gt;You see, &lt;a href=&#34;http://www.faqs.org/rfcs/rfc1459.html&#34;&gt;RFC 1459&lt;/a&gt;, the standards
+document describing the IRC protocol, does not regulate the use of character
+encodings:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.2 Character codes
+
+No specific character set is specified. The protocol is based on a
+set of codes which are composed of eight (8) bits, making up an
+octet. Each message may be composed of any number of these octets;
+however, some octet values are used for control codes which act as
+message delimiters.
+
+Regardless of being an 8-bit protocol, the delimiters and keywords
+are such that protocol is mostly usable from USASCII terminal and a
+telnet connection.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ASCII uses the first 7 bits. So, from the looks of it, you should only be able
+to rely on the first seven bits representing an ASCII character, the
+interpretation of the last bit being anyone&amp;rsquo;s guess. That&amp;rsquo;s bad.&lt;/p&gt;
+
+&lt;p&gt;For most of IRC&amp;rsquo;s history, the most popular IRC client has been mIRC. Until
+recently, mIRC decoded incoming messages using the ANSI code page that was
+currently being used on the user&amp;rsquo;s Windows system. This meant that whenever
+mIRC users wanted to communicate using anything other than ASCII characters,
+they&amp;rsquo;d better be using the same code page. In later versions, mIRC decodes
+incoming messages as UTF-8 if they look UTF-8 encoded, or code page 1252 (used
+by most Westerners). As for &lt;em&gt;how&lt;/em&gt; it does this, I cannot know since mIRC is
+closed-source.&lt;/p&gt;
+
+&lt;p&gt;The open-source client irssi handles the situation similarly. It uses GLib&amp;rsquo;s
+&lt;a href=&#34;http://library.gnome.org/devel/glib/2.16/glib-Unicode-Manipulation.html#g-utf8-validate&#34;&gt;g_utf8_validate()&lt;/a&gt;
+function to check if the incoming message is UTF-8 encoded, otherwise it falls
+back to CP1252 by default. As for XChat, it uses the same GLib function, but
+if it determines that the message is not UTF-8, XChat decodes the message in a
+rather novel way. Here is an excerpt from its
+&lt;a href=&#34;http://xchat.cvs.sourceforge.net/xchat/xchat2/src/common/text.c?view=markup&#34;&gt;&lt;code&gt;src/common/text.c&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/* converts a CP1252/ISO-8859-1(5) hybrid to UTF-8                           */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/* Features: 1. It never fails, all 00-FF chars are converted to valid UTF-8 */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           2. Uses CP1252 in the range 80-9f because ISO doesn&amp;#39;t have any- */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*              thing useful in this range and it helps us receive from mIRC */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           3. The five undefined chars in CP1252 80-9f are replaced with   */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*              ISO-8859-15 control codes.                                   */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           4. Handles 0xa4 as a Euro symbol ala ISO-8859-15.               */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           5. Uses ISO-8859-1 (which matches CP1252) for everything else.  */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           6. This routine measured 3x faster than g_convert :)            */&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;How would I handle this in Perl? I don&amp;rsquo;t want to depend on GLib, and I don&amp;rsquo;t
+want to write any C code (requiring the user to have a C compiler). At first I
+tried using &lt;a href=&#34;http://search.cpan.org/dist/Encode-Detect/&#34;&gt;Encode::Detect&lt;/a&gt;, but
+there are two problems with it. It&amp;rsquo;s an extra dependency, and more
+importantly, it works heuristically, deciding which character set is being
+used based on the number of occurences of each character code. As such, it&amp;rsquo;s
+only reliable when large amounts of data are involved. Like a whole web page,
+for example, which is what the code was written for. Then I learned of
+&lt;a href=&#34;http://perldoc.perl.org/Encode/Guess.html&#34;&gt;Encode::Guess&lt;/a&gt;, which is included
+with Perl as of version 5.6.0. The following decodes &lt;code&gt;$line&lt;/code&gt; as UTF-8 if
+Encode::Guess is sure that it&amp;rsquo;s UTF-8. Otherwise it decodes it as CP1252.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;use&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Encode&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;qw(decode)&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;use&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Encode::Guess&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;my&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$utf8&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;guess_encoding&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;);&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;ref&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$utf8&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;cp1252&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So far this method has worked flawlessly for me on channels with mixed
+encodings. However, I don&amp;rsquo;t know exactly how Encode::Guess works, so I&amp;rsquo;m not
+as confident in this method as I could be. Any feedback on this issue would be
+quite welcome.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

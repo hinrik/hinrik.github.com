@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://blog.nix.is/</loc>
+    <lastmod>2015-03-03T22:40:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/perl6-vim-gets-more-love</loc>
+    <lastmod>2015-03-03T22:40:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/testing-vim-syntax-files</loc>
+    <lastmod>2009-09-01T13:15:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/more-docs-added</loc>
+    <lastmod>2009-08-17T23:54:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/tagging-fail-regexes</loc>
+    <lastmod>2009-07-29T19:03:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/grok-refactor</loc>
+    <lastmod>2009-07-29T18:29:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/on-to-the-man-pages</loc>
+    <lastmod>2009-07-22T18:31:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/lucky-013</loc>
+    <lastmod>2009-07-22T18:01:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/half-way-there</loc>
+    <lastmod>2009-07-11T01:56:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/grok-009-is-out</loc>
+    <lastmod>2009-07-01T19:36:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/grok-update</loc>
+    <lastmod>2009-07-01T19:28:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/first-gsoc-post</loc>
+    <lastmod>2009-05-31T22:15:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/poe-component-irc-600-is-here</loc>
+    <lastmod>2009-03-05T03:03:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/spicing-up-irc-with-megahal</loc>
+    <lastmod>2008-12-28T12:05:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/perl-book-mini-reviews</loc>
+    <lastmod>2008-09-11T23:50:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/irc-and-character-encoding</loc>
+    <lastmod>2008-05-01T01:44:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/theming-the-linux-console</loc>
+    <lastmod>2008-05-22T01:22:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.nix.is/first-post</loc>
+    <lastmod>2008-03-24T04:32:00+00:00</lastmod>
+  </url>
+  
+</urlset>

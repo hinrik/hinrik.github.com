@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>IRC and character encoding - literal thoughts</title>
+<meta property="og:title" content="IRC and character encoding - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">IRC and character encoding</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/irc">irc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">May 5, 2008</span>
+    
+
+    <div class="article-content">
+      <p>A while ago, I wrote an IRC logger for
+<a href="http://search.cpan.org/dist/POE-Component-IRC/">POE::Component::IRC</a>, which
+is an IRC client module for Perl. The main challenge I faced was the issue of
+character encodings. Since IRC is ripe with clients that use different
+encodings, messages must be reliably decoded before they are written to a
+file.
+</p>
+
+<p>You see, <a href="http://www.faqs.org/rfcs/rfc1459.html">RFC 1459</a>, the standards
+document describing the IRC protocol, does not regulate the use of character
+encodings:</p>
+
+<pre><code>2.2 Character codes
+
+No specific character set is specified. The protocol is based on a
+set of codes which are composed of eight (8) bits, making up an
+octet. Each message may be composed of any number of these octets;
+however, some octet values are used for control codes which act as
+message delimiters.
+
+Regardless of being an 8-bit protocol, the delimiters and keywords
+are such that protocol is mostly usable from USASCII terminal and a
+telnet connection.
+</code></pre>
+
+<p>ASCII uses the first 7 bits. So, from the looks of it, you should only be able
+to rely on the first seven bits representing an ASCII character, the
+interpretation of the last bit being anyone&rsquo;s guess. That&rsquo;s bad.</p>
+
+<p>For most of IRC&rsquo;s history, the most popular IRC client has been mIRC. Until
+recently, mIRC decoded incoming messages using the ANSI code page that was
+currently being used on the user&rsquo;s Windows system. This meant that whenever
+mIRC users wanted to communicate using anything other than ASCII characters,
+they&rsquo;d better be using the same code page. In later versions, mIRC decodes
+incoming messages as UTF-8 if they look UTF-8 encoded, or code page 1252 (used
+by most Westerners). As for <em>how</em> it does this, I cannot know since mIRC is
+closed-source.</p>
+
+<p>The open-source client irssi handles the situation similarly. It uses GLib&rsquo;s
+<a href="http://library.gnome.org/devel/glib/2.16/glib-Unicode-Manipulation.html#g-utf8-validate">g_utf8_validate()</a>
+function to check if the incoming message is UTF-8 encoded, otherwise it falls
+back to CP1252 by default. As for XChat, it uses the same GLib function, but
+if it determines that the message is not UTF-8, XChat decodes the message in a
+rather novel way. Here is an excerpt from its
+<a href="http://xchat.cvs.sourceforge.net/xchat/xchat2/src/common/text.c?view=markup"><code>src/common/text.c</code></a>:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #8f5902; font-style: italic">/* converts a CP1252/ISO-8859-1(5) hybrid to UTF-8                           */</span>
+<span style="color: #8f5902; font-style: italic">/* Features: 1. It never fails, all 00-FF chars are converted to valid UTF-8 */</span>
+<span style="color: #8f5902; font-style: italic">/*           2. Uses CP1252 in the range 80-9f because ISO doesn&#39;t have any- */</span>
+<span style="color: #8f5902; font-style: italic">/*              thing useful in this range and it helps us receive from mIRC */</span>
+<span style="color: #8f5902; font-style: italic">/*           3. The five undefined chars in CP1252 80-9f are replaced with   */</span>
+<span style="color: #8f5902; font-style: italic">/*              ISO-8859-15 control codes.                                   */</span>
+<span style="color: #8f5902; font-style: italic">/*           4. Handles 0xa4 as a Euro symbol ala ISO-8859-15.               */</span>
+<span style="color: #8f5902; font-style: italic">/*           5. Uses ISO-8859-1 (which matches CP1252) for everything else.  */</span>
+<span style="color: #8f5902; font-style: italic">/*           6. This routine measured 3x faster than g_convert :)            */</span>
+</pre></div>
+
+
+<p>How would I handle this in Perl? I don&rsquo;t want to depend on GLib, and I don&rsquo;t
+want to write any C code (requiring the user to have a C compiler). At first I
+tried using <a href="http://search.cpan.org/dist/Encode-Detect/">Encode::Detect</a>, but
+there are two problems with it. It&rsquo;s an extra dependency, and more
+importantly, it works heuristically, deciding which character set is being
+used based on the number of occurences of each character code. As such, it&rsquo;s
+only reliable when large amounts of data are involved. Like a whole web page,
+for example, which is what the code was written for. Then I learned of
+<a href="http://perldoc.perl.org/Encode/Guess.html">Encode::Guess</a>, which is included
+with Perl as of version 5.6.0. The following decodes <code>$line</code> as UTF-8 if
+Encode::Guess is sure that it&rsquo;s UTF-8. Otherwise it decodes it as CP1252.</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #204a87; font-weight: bold">use</span> <span style="color: #000000">Encode</span> <span style="color: #4e9a06">qw(decode)</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #204a87; font-weight: bold">use</span> <span style="color: #000000">Encode::Guess</span><span style="color: #000000; font-weight: bold">;</span>
+
+<span style="color: #204a87; font-weight: bold">my</span> <span style="color: #000000">$utf8</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">guess_encoding</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">$line</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&#39;utf8&#39;</span><span style="color: #000000; font-weight: bold">);</span>
+<span style="color: #000000">$line</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87">ref</span> <span style="color: #000000">$utf8</span> <span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">decode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&#39;utf8&#39;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">$line</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">decode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&#39;cp1252&#39;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">$line</span><span style="color: #000000; font-weight: bold">);</span>
+</pre></div>
+
+
+<p>So far this method has worked flawlessly for me on channels with mixed
+encodings. However, I don&rsquo;t know exactly how Encode::Guess works, so I&rsquo;m not
+as confident in this method as I could be. Any feedback on this issue would be
+quite welcome.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/irc-and-character-encoding';
+    var disqus_title = 'IRC and character encoding';
+    var disqus_url = 'http:\/\/blog.nix.is\/irc-and-character-encoding';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,952 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>literal thoughts</title>
+    <link>http://blog.nix.is/tags/perl/index.xml</link>
+    <description>Recent content on literal thoughts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://blog.nix.is/tags/perl/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Testing vim syntax files</title>
+      <link>http://blog.nix.is/testing-vim-syntax-files</link>
+      <pubDate>Tue, 01 Sep 2009 13:13:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/testing-vim-syntax-files</guid>
+      <description>&lt;p&gt;Yesterday, Andy Lester opened an &lt;a href=&#34;http://github.com/petdance/vim-perl/issues#issue/15&#34;&gt;issue&lt;/a&gt;
+for vim-perl on github about adding an automated test suite. I&amp;rsquo;ve thought
+about doing something like this before, so last night got busy with
+prototyping a test harness.
+&lt;/p&gt;
+
+&lt;p&gt;What I&amp;rsquo;ve got so far (in &lt;a href=&#34;https://github.com/hinrik/vim-perl/tree&#34;&gt;my fork&lt;/a&gt;)
+is a test file that uses Text::VimColor to generate HTML and compare it
+against a reference HTML document to determine if the syntax file is doing its
+job. If a reference file can&amp;rsquo;t be found, it will create it and skip that
+test. Here&amp;rsquo;s what it looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ make test
+prove -rv t
+t/01_highlighting.t .. 
+ok 1 - Correct output for t_source/perl/basic.t
+ok 2 # skip Created t_source/perl/advanced.t.html
+ok 3 - Correct output for t_source/perl6/basic.t
+1..3
+ok
+All tests successful.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In case of failure, it will use Test::Differences to show you what&amp;rsquo;s wrong,
+and write the incorrect output to disk for you to inspect:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ vim syntax/perl6.vim # make a bad change
+$ make test
+prove -rv t
+t/01_highlighting.t .. 
+ok 1 - Correct output for t_source/perl/basic.t
+ok 2 - Correct output for t_source/perl/advanced.t
+not ok 3 - Correct output for t_source/perl6/basic.t
+
+#   Failed test &#39;Correct output for t_source/perl6/basic.t&#39;
+#   at t/01_highlighting.t line 77.
+#
+«output from Test::Differences showing the offending lines»
+# You can inspect the incorrect output at t_source/perl6/basic.t_fail.html
+1..3
+# Looks like you failed 1 test of 3.
+Dubious, test returned 1 (wstat 256, 0x100)
+Failed 1/3 subtests
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only big downside to this is that &lt;code&gt;01_highlighting.t&lt;/code&gt; tests all the source
+files in one go. You currently can&amp;rsquo;t tell it to only test one specific file.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>More docs added</title>
+      <link>http://blog.nix.is/more-docs-added</link>
+      <pubDate>Mon, 17 Aug 2009 23:52:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/more-docs-added</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve added Jonathan Scott Duff&amp;rsquo;s introduction to Perl 6 regexes to Perl6-Doc
+as &lt;code&gt;perlreintro&lt;/code&gt;. In addition I put in a first draft of a &lt;code&gt;perlobjintro&lt;/code&gt;.
+Neither of these correspond to names from the set of Perl 5 man pages, which
+is fitting since they are not directly based on them. So, Perl6-Doc now has
+4 man pages, the aforementioned two as well as &lt;code&gt;perlintro&lt;/code&gt; and &lt;code&gt;perlsyn&lt;/code&gt;. I&amp;rsquo;ll
+be carefully adding to and polishing these in the near future. I&amp;rsquo;m hesitant to
+start on man pages relating to modules, IO, laziness/iterators, and other very
+important features, as the specs (and implementation) for those are still
+shifting heavily from month to month.
+&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been thinking about using the Perl Table Index as initial source material
+for the magical syntax recognition feature, the implementation of which has
+remained elusive for a while. The current implementation is just a proof-of-
+concept with only a few terms as of yet. However, Damian Conway just published
+a significant update to Synopsis 26 on Perl documentation, focused on tying
+docs to code, so it might be time to figure out some Pod-ish source format for
+the terms to be stored in. Writing Pod is a breeze, so it should be easy to
+contribute new terms.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;grok&lt;/code&gt; also needs more love. I&amp;rsquo;m not as happy as I&amp;rsquo;d like to be with some of
+its implementation details, most notably how it picks out functions from
+Synopses 29 and 32, using simple regexes (to be fair, this is exactly what
+good ol&amp;rsquo; &lt;code&gt;perldoc -f&lt;/code&gt; does). It should parse the Pod and pick out parts of the
+document tree instead, I think. There are also still a few visual differences
+between textual output of Pod 5 and Pod 6 that I have to address. Pod 5
+textual output is pleasingly indented (gradually depending on the current
+heading level), which makes it very easy to follow, while Pod 6 is not.&lt;/p&gt;
+
+&lt;p&gt;As a sidenote, I believe I&amp;rsquo;ve found what was causing intermittent FAIL reports
+from CPAN testers. Some machines had a pretty old version of Pod::Simple which
+didn&amp;rsquo;t take well to subclassing. Another failure was caused by an old
+Pod::Parser (deprecated, but relied on by Pod::Xhtml) version which didn&amp;rsquo;t
+recognize &lt;code&gt;=encoding&lt;/code&gt; directives. The relevant distributions now depend on
+newer versions of those troublesome modules.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Tagging, FAIL, regexes</title>
+      <link>http://blog.nix.is/tagging-fail-regexes</link>
+      <pubDate>Wed, 29 Jul 2009 19:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/tagging-fail-regexes</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m currently working on making &lt;code&gt;grok&lt;/code&gt; index all &lt;code&gt;X&amp;lt;&amp;gt;&lt;/code&gt; (and maybe &lt;code&gt;C&amp;lt;&amp;gt;&lt;/code&gt;) tags
+in Pod documents. The user will then be able to look them up and see which
+docs contain the search term in question.
+&lt;/p&gt;
+
+&lt;p&gt;Gábor Szabó has already done &lt;a href=&#34;http://perlcabal.org/syn/index_X.html&#34;&gt;something like this&lt;/a&gt;
+for the Perl 6 Synopses. His implementation only looked for formatting codes
+using the standard &lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; format, but I just patched it to look for &lt;code&gt;&amp;lt;&amp;lt; &amp;gt;&amp;gt;&lt;/code&gt;,
+&lt;code&gt;&amp;lt;&amp;lt;&amp;lt; &amp;gt;&amp;gt;&amp;gt;&lt;/code&gt;, and &lt;code&gt;«»&lt;/code&gt; tags as well. Ideally I would like to use a Pod parser to
+get the tags, but it&amp;rsquo;s just using regexes for now. Gábor also asked me to
+have &lt;code&gt;grok&lt;/code&gt; look up the predefined subrules from Synopsis 5, which I think
+would be a good addition.&lt;/p&gt;
+
+&lt;p&gt;For a while, I&amp;rsquo;ve been getting some rare &lt;a href=&#34;http://static.cpantesters.org/distro/G/grok.html&#34;&gt;FAIL reports&lt;/a&gt;
+about &lt;code&gt;grok&lt;/code&gt; from CPAN testers. It seems to be two problems that always
+manifest themselves at the same time. One of them is obviously because the
+tester has an old version of Pod::Parser which doesn&amp;rsquo;t understand the
+&lt;code&gt;=encoding&lt;/code&gt; directive, but the other one is more mysterious. I&amp;rsquo;ll have to do
+some more digging, as I haven&amp;rsquo;t been able to reproduce it on my machines.&lt;/p&gt;
+
+&lt;p&gt;Jonathan Scott Duff pointed me to his unpublished
+&lt;a href=&#34;http://feather.perl6.nl/~duff/articles/perl6/p6-regex.pod&#34;&gt;introduction&lt;/a&gt; to
+Perl 6 regexes which I could use as a starting point for a &lt;code&gt;perlretut&lt;/code&gt; man
+page. I haven&amp;rsquo;t got it into a releasable state yet, but it will soon.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Grok refactor</title>
+      <link>http://blog.nix.is/grok-refactor</link>
+      <pubDate>Fri, 24 Jul 2009 13:30:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-refactor</guid>
+      <description>&lt;p&gt;As the title suggests, I reorganized the &lt;code&gt;grok&lt;/code&gt; a bit, in addition to adding a
+few new features.
+&lt;/p&gt;
+
+&lt;p&gt;The code is now more modular, and much easier to maintain. I added support for
+looking up individual functions/methods from all the chapters of Synopsis 32.
+In other news, Perl6::Doc 0.42 is just out, which includes first drafts of
+&lt;code&gt;perlintro&lt;/code&gt; and &lt;code&gt;perlsyn&lt;/code&gt; documents, which &lt;code&gt;grok&lt;/code&gt; will now find.&lt;/p&gt;
+
+&lt;p&gt;This brings the total number of things known to &lt;code&gt;grok&lt;/code&gt; up by almost a hundred:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ grok -i|wc -l
+613
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>On to the man pages</title>
+      <link>http://blog.nix.is/on-to-the-man-pages</link>
+      <pubDate>Wed, 22 Jul 2009 18:31:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/on-to-the-man-pages</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been working on the &lt;code&gt;perlintro&lt;/code&gt; document found in the pugs
+repository, as well as porting Perl 5&amp;rsquo;s &lt;code&gt;perlsyn&lt;/code&gt;. These are the most &amp;ldquo;basic&amp;rdquo;
+man pages about the language, and should be ported first (especially since
+many of the more specific bits in Perl 6 are still in flux).
+&lt;/p&gt;
+
+&lt;p&gt;As for &lt;code&gt;perlintro&lt;/code&gt;, I can see a few more-than-trivial things that need
+changing. For one thing, the introduction to regular expressions is very
+casual, but Perl 6&amp;rsquo;s regex/grammar support has seen a major overhaul. Simply
+translating the examples to the Perl 6 equivalent seems to just make them
+longer, which gives the wrong impression. Focusing less on quick-and-dirty
+examples and more on the big picture might help the newcomer here, as grammars
+are integral to Perl 6, not just some special strings with weird syntax as
+they were in ol&amp;rsquo; Perl 5.&lt;/p&gt;
+
+&lt;p&gt;A lot of special cases and &amp;ldquo;warts&amp;rdquo; have been replaced with new, exciting
+concepts that show up again and again in Perl (laziness, autothreading, all
+blocks are closures, everything is an object) that need to be touched upon.
+You could say that in Perl 6, the harmony / idiosyncrasy ratio has been
+lowered, and that&amp;rsquo;s a very &lt;strong&gt;good&lt;/strong&gt; thing. Some of these can be saved for
+&lt;code&gt;perlsyn&lt;/code&gt;, but nonetheless, they need to be introduced well.&lt;/p&gt;
+
+&lt;p&gt;In other news, I noticed that &lt;a href=&#34;http://perldoc.perl.org&#34;&gt;perldoc.perl.org&lt;/a&gt; has
+seen a facelift. I wonder if the software behind it might be used to power a
+Perl 6 doc site sometime in the future.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Lucky 0.13</title>
+      <link>http://blog.nix.is/lucky-013</link>
+      <pubDate>Thu, 16 Jul 2009 06:42:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/lucky-013</guid>
+      <description>&lt;p&gt;I just uploaded &lt;code&gt;grok&lt;/code&gt; 0.13 to PAUSE. It has the things I mentioned in my last
+post, plus some bug fixes.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;grok&lt;/code&gt; can look up quite a few things now (527 including documents such as
+Synopses), but many of the answers it provides lack thoroughness. According to
+my project schedule, it&amp;rsquo;s time to start writing new documentation. That means
+I can focus on making these answers better.
+&lt;/p&gt;
+
+&lt;p&gt;I should also write/update a tutorial pretty soon, though I&amp;rsquo;m not exactly sure
+where I&amp;rsquo;ll start. I could update the
+&lt;a href=&#34;http://svn.pugscode.org/pugs/docs/Perl6/Tutorial/perlintro.pod6&#34;&gt;&lt;code&gt;perlintro&lt;/code&gt;&lt;/a&gt;
+in the Pugs repository and add it to Perl6::Doc, or I could use the &lt;a href=&#34;http://svn.pugscode.org/pugs/docs/tutorial/&#34;&gt;Perl 6
+part&lt;/a&gt; of the book &lt;em&gt;Perl 6 and
+Parrot Essentials&lt;/em&gt; which was donated to the Perl Foundation by O&amp;rsquo;Reilly. That
+one is a bit longer, so I might just use it for a more detailed introduction
+(something like Perl 5&amp;rsquo;s &lt;code&gt;perlsyn&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;P.S. Since I&amp;rsquo;ve got the Pod 5 ANSI-color renderer mostly working now, users of
+Perl 5&amp;rsquo;s &lt;code&gt;perldoc&lt;/code&gt; who like colors might want to install Pod::Text::Ansi
+and put the following in their &lt;code&gt;~/.bashrc&lt;/code&gt; (or equivalent):&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #204a87&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;PERLDOC&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;-MPod::Text::Ansi&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Half way there</title>
+      <link>http://blog.nix.is/half-way-there</link>
+      <pubDate>Sat, 11 Jul 2009 01:54:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/half-way-there</guid>
+      <description>&lt;p&gt;With Summer of Code&amp;rsquo;s mid-term evaluations coming up, some interesting things
+are about to happen to &lt;code&gt;grok&lt;/code&gt;. I was contacted by Herbert Breunung, author of
+&lt;a href=&#34;http://search.cpan.org/dist/Perl6-Doc/&#34;&gt;Perl6::Doc&lt;/a&gt; (formerly
+Perl6::Bible), which is a project that shares some of &lt;code&gt;grok&lt;/code&gt;&amp;rsquo;s goals.
+&lt;/p&gt;
+
+&lt;p&gt;He told me that he doesn&amp;rsquo;t have enough time to maintain his project anymore
+and would like some sort of merge to happen. I said I&amp;rsquo;d look into it. His
+project bundles all the Synopses, Apocalypses, Exegeses, and some other Perl 6
+documentation, and ships with a &lt;code&gt;perldoc&lt;/code&gt; wrapper for reading them. What I
+would like to do is to move all documentation out of the &lt;code&gt;grok&lt;/code&gt; distribution
+and update/add more to Perl6::Doc while eliminating the &lt;code&gt;perldoc&lt;/code&gt; wrapper
+(in favor of &lt;code&gt;grok&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;He also brought to my attention the &lt;a href=&#34;http://www.perlfoundation.org/perl6/index.cgi?perl_table_index&#34;&gt;Perl Table Index&lt;/a&gt;,
+a sort of Perl 6 glossary. Ahmad Zawawi has &lt;a href=&#34;http://padre.perlide.org/trac/changeset/5994&#34;&gt;just patched&lt;/a&gt;
+his &lt;a href=&#34;http://search.cpan.org/dist/Padre-Plugin-Perl6/&#34;&gt;Padre::Plugin::Perl6&lt;/a&gt; to
+feed this index to &lt;code&gt;grok&lt;/code&gt;. I will probably port the Perl Table Index to the
+Perl6::Doc distribution and make &lt;code&gt;grok&lt;/code&gt; look things up in it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve started writing a Pod::Text subclass as well as amending
+Perl6::Perldoc::To::Ansi to conform to a consistent color scheme when using
+the default ANSI-colored output.&lt;/p&gt;
+
+&lt;p&gt;Something which &lt;code&gt;grok&lt;/code&gt; should eventually be able to do is recognize arbitrary
+Perl 6 syntax (at very fine level of granularity, that is) and tell you what
+it means. A first stab at this will be to simply include a table of some
+common ones and look those up. Stuff like &lt;code&gt;my&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt;, and so on. Doing this
+reliably is the original inspiration for the u4x project (Userdocs for
+Christmas), of which &lt;code&gt;grok&lt;/code&gt; is a part.&lt;/p&gt;
+
+&lt;p&gt;I hope to make a release of &lt;code&gt;grok&lt;/code&gt; and Perl6::Doc shortly which will include
+all of the above.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>grok 0.09 is out</title>
+      <link>http://blog.nix.is/grok-009-is-out</link>
+      <pubDate>Wed, 01 Jul 2009 19:33:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-009-is-out</guid>
+      <description>&lt;p&gt;The code is starting to take a more stable form. I&amp;rsquo;ve prepended an underscore
+to all private/internal subroutines and documented the rest. Perl authors
+wishing to use &lt;code&gt;grok&lt;/code&gt;&amp;rsquo;s functionality will now have an easier time doing so.
+&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also added various author tests to the distribution to help keep the code
+in shape (or at least remind me when it&amp;rsquo;s not), notably Test::Pod,
+Test::Pod::Coverage, and Test::Perl::Critic.&lt;/p&gt;
+
+&lt;p&gt;Since my last blog post, &lt;code&gt;grok&lt;/code&gt; has gained a few features. It can print the
+name of the target file (like &lt;code&gt;perldoc -l&lt;/code&gt;), print an index of known
+documentation files, output xhtml, and detect whether the target file has Pod
+5 or Pod 6 in it. It&amp;rsquo;s also got some Win32 fixes and more informative error
+messages.&lt;/p&gt;
+
+&lt;p&gt;Pretty soon I will start bringing in some more docs to bundle with it.
+Tutorials and such. I will also most likely implement function documentation
+lookup (like &lt;code&gt;perldoc -f&lt;/code&gt;) in grok.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>grok update</title>
+      <link>http://blog.nix.is/grok-update</link>
+      <pubDate>Fri, 26 Jun 2009 05:54:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/grok-update</guid>
+      <description>&lt;p&gt;Some things have kept me very busy lately and I&amp;rsquo;m a bit behind on my GSoC
+schedule. I&amp;rsquo;m starting to catch up now, though.
+&lt;/p&gt;
+
+&lt;p&gt;First of all, as of version 0.05, you can now easily install &lt;code&gt;grok&lt;/code&gt; from the
+command line on most operating systems like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cpanp -i App::Grok
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It can handle Pod 5 files now (via Pod::Text) as well (which most of the
+Perl 6 Synopses are written in). The ANSI-colored output looks a bit different
+than the Pod 6 output because Pod::Text is very conservative in its use of
+colors. I&amp;rsquo;ll probably make them more similar later to keep it consistent.&lt;/p&gt;
+
+&lt;p&gt;When called interactively, &lt;code&gt;grok&lt;/code&gt; now uses your system&amp;rsquo;s pager to view the
+output by default.&lt;/p&gt;
+
+&lt;p&gt;It will now treat an argument as a Pod 6 file to read if said argument doesn&amp;rsquo;t
+match a known documentation target. As for the targets, the only known ones so
+far are the synopses (which are bundled with &lt;code&gt;grok&lt;/code&gt; for now), so you can do
+things like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ grok s02
+$ grok s32-rules
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>First GSoC post</title>
+      <link>http://blog.nix.is/first-gsoc-post</link>
+      <pubDate>Wed, 27 May 2009 17:25:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/first-gsoc-post</guid>
+      <description>&lt;p&gt;I officially started on my Google Summer of Code project (project details
+&lt;a href=&#34;http://nix.is/gsoc/&#34;&gt;here&lt;/a&gt;) last weekend.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been tasked with writing a &lt;code&gt;perldoc&lt;/code&gt; equivalent for Perl 6. I&amp;rsquo;ve decided
+to write it in Perl 5 for now, since it&amp;rsquo;s already got Perl6::Perldoc, which
+is a fast and feature-complete parser for the Perl 6 version of Pod (see
+&lt;a href=&#34;http://perlcabal.org/syn/S26.html&#34;&gt;specification&lt;/a&gt;), as well as lots of other
+useful CPAN modules which I won&amp;rsquo;t have to rewrite in Perl 6 (yet).
+&lt;/p&gt;
+
+&lt;p&gt;The program will be called &lt;code&gt;grok&lt;/code&gt;
+(&lt;a href=&#34;http://github.com/hinrik/grok&#34;&gt;repository&lt;/a&gt;). So far it&amp;rsquo;s just a barebones
+command-line reader for Pod 6, but I did create an ANSI-colored terminal
+renderer for Perl6::Perldoc. It might be too colorful for some people&amp;rsquo;s
+taste currently, so maybe I&amp;rsquo;ll tone it down a little. I think Ruby&amp;rsquo;s &lt;code&gt;ri&lt;/code&gt;
+documentation reader is the only such tool which colors the output, and I
+thought it was a nice enough feature (one of many!) to copy. I&amp;rsquo;ve also been
+looking at &lt;code&gt;pydoc&lt;/code&gt; and &lt;code&gt;javadoc&lt;/code&gt; in search of interesting features to
+implement.&lt;/p&gt;
+
+&lt;p&gt;The plan is to make it more modern and extensive than &lt;code&gt;perldoc&lt;/code&gt;. One
+interesting thing I might end up doing is making use of STD (the standard
+Perl 6 grammar) to parse arbitrary syntax, so you could do stuff like &lt;code&gt;grok
+&#39;[*]&#39;&lt;/code&gt; and the program would tease the expression apart and show you
+documentation for both the &lt;code&gt;[]&lt;/code&gt; and the &lt;code&gt;*&lt;/code&gt; operators.&lt;/p&gt;
+
+&lt;p&gt;Some portion of the project also includes writing new documentation for Perl
+6. I haven&amp;rsquo;t written any yet, but I bet it will be fun. Before doing so, we
+first have to figure out how to organize the the docs. Since Perl 6 is a
+specification, it&amp;rsquo;s not as obvious as with Perl 5, where the docs are included
+(sometimes inline) with the implementation.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>POE::Component::IRC 6.00 is here</title>
+      <link>http://blog.nix.is/poe-component-irc-600-is-here</link>
+      <pubDate>Thu, 05 Mar 2009 03:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/poe-component-irc-600-is-here</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://search.cpan.org/dist/POE-Component-IRC&#34;&gt;POE::Component::IRC&lt;/a&gt; version
+6.00 has just been released on CPAN. I&amp;rsquo;ve neglected to blog about PoCo::IRC
+since I started contributing to it, but since a new major release has been
+rolled out[1], now would be a good time. Also, as it turns out, next May will
+be the tenth anniversary of the project&amp;rsquo;s first release.
+&lt;/p&gt;
+
+&lt;p&gt;For the uninitiated, POE::Component::IRC is an event-driven IRC client library
+built on top of POE. People mostly use it to write bots. Some have made that
+even easier by creating a simpler interface suited to that task (see
+Bot::BasicBot).&lt;/p&gt;
+
+&lt;p&gt;I became involved in the project about 14 months ago, fixing bugs and adding
+features. There&amp;rsquo;ve been about 50 releases during that time, so there&amp;rsquo;s
+something for everybody. Following is a list of the most prominent ones.&lt;/p&gt;
+
+&lt;h3 id=&#34;important-squashed-bugs&#34;&gt;Important squashed bugs&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Quite a few DCC-related bugs have been fixed, error handling and diagnostics have been improved.&lt;/li&gt;
+&lt;li&gt;A bug causing the NickReclaim plugin to only try to reclaim the nick once has been fixed.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State was reacting incorrectly to some WHO replies sent by IRC servers that veered from the RFCs, causing it to hold inconsistent information. This has been fixed.&lt;/li&gt;
+&lt;li&gt;When raw messages were enabled, the raw line was not provided with CTCP-related events. Fixed.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State would issue more WHO commands than necessary when another user would join more than one of the component&amp;rsquo;s channels. No more.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;new-major-features&#34;&gt;New major features&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;POE::Component::IRC::Common, which provides many helper functions, now has functions for identifying and stripping color/formatting from IRC messages. It also defines IRC color constants for use in messages.&lt;/li&gt;
+&lt;li&gt;We now handle FreeNode&amp;rsquo;s IDENTIFY-MSG capability, which means that can you always know whether a user had identified with NickServ when s/he wrote a particular message.&lt;/li&gt;
+&lt;li&gt;Sending and receiving files with spaces in them over DCC is now supported.&lt;/li&gt;
+&lt;li&gt;All DCC-related events now provide the IP address of the peer.&lt;/li&gt;
+&lt;li&gt;DCC resume support has been implemented.&lt;/li&gt;
+&lt;li&gt;The BotTraffic plugin now send an event for every CTCP ACTION issued by the client.&lt;/li&gt;
+&lt;li&gt;We now guard against sending IRC protocol messages that are too long and might get us booted off the server.&lt;/li&gt;
+&lt;li&gt;The Connector plugin (takes care of maintaining the connection to the IRC server) now supports cycling through a list of servers when reconnecting.&lt;/li&gt;
+&lt;li&gt;The CTCP plugin can now respond to CTCP SOURCE requests for you.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State and can now track the away status of users for you.&lt;/li&gt;
+&lt;li&gt;POE::Component::IRC::State now keeps track of a channel&amp;rsquo;s creation time.&lt;/li&gt;
+&lt;li&gt;Added NICKSERV, SERVLIST, and SQUERY commands.&lt;/li&gt;
+&lt;li&gt;Plugins can now respond to custom events which have not been explicitly defined by POE::Component::IRC.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;new-plugins&#34;&gt;New plugins&lt;/h3&gt;
+
+&lt;p&gt;I wrote 5 additional core plugins:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;First of all, the &lt;strong&gt;Logger&lt;/strong&gt; plugin. It logs channel/private/dcc chat activity to files on disk like normal IRC clients do.&lt;/li&gt;
+&lt;li&gt;Then there&amp;rsquo;s &lt;strong&gt;AutoJoin&lt;/strong&gt;, which takes care of keeping you on your favorite channels, whatever happens.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NickServID&lt;/strong&gt; deals with identifying your user to NickServ.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;CycleEmpty&lt;/strong&gt; plugin which reclaims ops on channels that become empty.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BotCommand&lt;/strong&gt;, which allows you to register commands that your bot handles, and get back an appropriate event when one is issued.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;testing&#34;&gt;Testing&lt;/h3&gt;
+
+&lt;p&gt;The test suite has been reorganized, many tests improved and more added. The
+test coverage (as reported by Devel::Cover) has increased from 40% (version
+5.48) to 61% (version 6.00).&lt;/p&gt;
+
+&lt;h3 id=&#34;refactoring&#34;&gt;Refactoring&lt;/h3&gt;
+
+&lt;p&gt;Much refactoring was done. The coding and indenting style has also been made
+consistent across the project, and many spotty coding practices have been
+eliminated (thanks, Perl::Critic).&lt;/p&gt;
+
+&lt;p&gt;POE::Filter::CTCP was merged with POE::Filter::IRC:Compat, and the former was
+removed. DCC support has been moved into its own plugin, and the plugin system
+itself has been ripped out in favor of POE::Component::Pluggable (which is
+based on the aforementioned plugin system).&lt;/p&gt;
+
+&lt;p&gt;Using the project&amp;rsquo;s current Perl::Critic parameters, version 6.00 has zero
+policy violations in 11,791 lines of code, compared to version 5.48&amp;rsquo;s 242
+violations in 10,634 lines of code. The average
+&lt;a href=&#34;http://en.wikipedia.org/wiki/Cyclomatic_complexity&#34;&gt;McCabe&lt;/a&gt; score of
+subroutines also dropped from 4.21 to 3.45.&lt;/p&gt;
+
+&lt;h3 id=&#34;documentation&#34;&gt;Documentation&lt;/h3&gt;
+
+&lt;p&gt;Last but not least, the Pod docs have been improved. Errors have been fixed,
+much more formatting and linking has been added for easier reading and
+browsing, consistency has been improved, and many sections have been expanded.&lt;/p&gt;
+
+&lt;p&gt;I also added a
+&lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC::Cookbook&#34;&gt;cookbook&lt;/a&gt; with
+a few recipes showing off some of the things one can do with
+POE::Component::IRC.&lt;/p&gt;
+
+&lt;h3 id=&#34;credits&#34;&gt;Credits&lt;/h3&gt;
+
+&lt;p&gt;Thanks to all the users who provided feedback, bug reports and patches. You
+helped make this happen. I also couldn&amp;rsquo;t have done many of these things
+without the help of Chris &amp;lsquo;BinGOs&amp;rsquo; Williams, the senior maintainer of
+POE::Component::IRC.&lt;/p&gt;
+
+&lt;p&gt;Now go write some IRC bots (or clients)!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Notes:&lt;/em&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;It&amp;rsquo;s actually quite an insignificant release. Historically,
+POE::Component::IRC versions have always passed the whole-number boundaries
+naturally as part of a regular &amp;ldquo;bump the version number up by 0.02 for the
+next release&amp;rdquo; process.&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>Spicing up IRC with MegaHAL</title>
+      <link>http://blog.nix.is/spicing-up-irc-with-megahal</link>
+      <pubDate>Fri, 29 Aug 2008 04:45:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/spicing-up-irc-with-megahal</guid>
+      <description>&lt;p&gt;I released &lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC::Plugin::MegaHAL&#34;&gt;POE::Component::IRC::Plugin::MegaHAL&lt;/a&gt;
+the other day, a &lt;a href=&#34;http://search.cpan.org/perldoc?POE::Component::IRC&#34;&gt;POE::Component::IRC&lt;/a&gt;
+plugin for the esteemed and humorous conversation simulator known as
+&lt;a href=&#34;http://megahal.alioth.debian.org/&#34;&gt;MegaHAL&lt;/a&gt;. This makes it very easy to add a
+MegaHAL brain to an IRC bot. I wrote one and fed him IRC logs of a channel
+that I frequent, then let him loose online (he&amp;rsquo;s a &amp;ldquo;he&amp;rdquo; because the IRC logs
+primarily include ramblings from male users). Some examples of his brilliance
+follow.
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;failo&amp;gt; Or maybe it&#39;s about sexual liberation and not perl &amp;amp; python.
+&amp;lt;failo&amp;gt; Yes, printing passport photos at home is surely a sign of a flock of aids infected prisoners with big sloppy dicks.
+&amp;lt;failo&amp;gt; I heard failo is a fact of evolution that cannot be shown because it looks like he knows what electricity is
+&amp;lt;failo&amp;gt; Fucking get your cock out and jerk each other off in proportion to how much dexter&#39;s wedding dinner is going your way
+&amp;lt;failo&amp;gt; Sir you had me at &amp;quot;balls.&amp;quot;
+&amp;lt;failo&amp;gt; Every porn dvd has a &amp;quot;grill setting&amp;quot;
+&amp;lt;failo&amp;gt; So only 2% of americans also believe that the government is composed of thong-wearing oiled-up muscle boys.
+&amp;lt;failo&amp;gt; Increased struggling from the bees made honey in the darkened cubicle, waiting for another musky man-pole to probe its way through the light to go mushroom hunting with me
+&amp;lt;failo&amp;gt; I bet all drug users keep a human skull on their myspace page.
+&amp;lt;failo&amp;gt; Earle: everybody&#39;s gay for a prison system in which millions of our descendants murder each other in prison.
+&amp;lt;failo&amp;gt; Either you&#39;re gay or associated with all drugs.
+&amp;lt;failo&amp;gt; The war on polarbears is going to cum buckets into my gaping /dev/null.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m afraid these results say more about the quality of conversation in this
+channel than they do about anything else&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Perl book (mini) reviews</title>
+      <link>http://blog.nix.is/perl-book-mini-reviews</link>
+      <pubDate>Sun, 04 May 2008 21:33:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/perl-book-mini-reviews</guid>
+      <description>&lt;p&gt;I much prefer reading things in well typeset paperback books than on computer
+screens. The subject of Perl is no exception. I&amp;rsquo;ve got quite a few Perl books.
+Some reviews are in order. I haven&amp;rsquo;t actually written a book review in many
+years, so they won&amp;rsquo;t be very &amp;ldquo;in-depth&amp;rdquo;, though.&lt;/p&gt;
+
+&lt;p&gt;Oh, and by the way, this, too, &lt;a href=&#34;http://use.perl.org/~schwern/journal/36263&#34;&gt;is a Perl blog&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;style&gt;.book-pic { float: right; padding: 10px; }&lt;/style&gt;
+
+&lt;h2 id=&#34;programming-perl&#34;&gt;Programming Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/progperl.png&#34; alt=&#34;Programming Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Larry Wall, Tom Christiansen, and Jon Orwant&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Ah, the Camel book. The latest edition is about 7 years old now, but it has
+stood the test of time. If you only read one Perl book, make it this one.
+Aside from being a comprehensive and detailed reference on the language, it&amp;rsquo;s
+also funny. One of my favorite passages is the start of chapter 10, Packages:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In this chapter, we get to start having fun, because we get to start
+talking about software design. If we&amp;rsquo;re going to talk about good software
+design, we have to talk about Laziness, Impatience, and Hubris, the basis
+of good software design.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ve all fallen into the trap of using cut-and-paste when we should have
+defined a higher-level abstraction, if only just a loop or a subroutine.*&lt;/p&gt;
+
+&lt;p&gt;To be sure, some folks have gone to the opposite extreme of defining
+ever-growing mounds of higher-level abstractions when they should have
+used cut-and-paste.† Generally, though, most of us need to think about
+using more abstraction rather than less.&lt;/p&gt;
+
+&lt;p&gt;Caught somewhere in the middle are the people who have a balanced view of
+how much abstraction is good, but who jump the gun on writing their own
+abstractions when they should be reusing existing code.‡&lt;/p&gt;
+
+&lt;p&gt;――――――――――&lt;/p&gt;
+
+&lt;p&gt;* This is a form of False Laziness.&lt;/p&gt;
+
+&lt;p&gt;† This is a form of False Hubris.&lt;/p&gt;
+
+&lt;p&gt;‡ You guessed it — this is False Impatience. But if you&amp;rsquo;re determined to
+reinvent the wheel, at least try to invent a better one.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The book is written for programmers, so if you&amp;rsquo;ve haven&amp;rsquo;t programmed before,
+you should probably start with an easier book. I&amp;rsquo;ve heard &amp;ldquo;Learning Perl&amp;rdquo; is
+pretty good.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-perl-cookbook&#34;&gt;The Perl Cookbook&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlcookbook.png&#34; alt=&#34;Perl Cookbook&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Tom Christiansen and Nathan Torkington&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is another highly useful book. If you read the Camel book and thought
+&amp;ldquo;What next?&amp;rdquo;, then this book is the answer. It&amp;rsquo;s got 900 pages of recipes for
+how to do everything from sorting hashes to writing pre-forking TCP servers.
+Each one of the 22 chapters begins with a few pages of very informative
+discussion of the problem domain at hand. This book has been extremely useful
+to me. It saves you a lot of Googling and looking through various Perl man
+pages. I highly recommend it.&lt;/p&gt;
+
+&lt;h2 id=&#34;mastering-regular-expressions&#34;&gt;Mastering Regular Expressions&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/masteringregex.png&#34; alt=&#34;Mastering Regular Expressions&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jeffrey Friedl&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;While not strictly a Perl book, it is about regular expressions, which were
+to a large extent popularized by Perl. Or the other way around. Or both. I&amp;rsquo;m
+not sure. But hey, at least the chapter on Perl is the longest one in the
+book.&lt;/p&gt;
+
+&lt;p&gt;Anyway, the book truly lives up to its title. It describes in detail how
+regular expression engines work, how to write effecient expressions, how
+programming languages support regexes, and more. Until I read this book, I did
+not know that there are two main approaches to writing a regular expression
+engine, a DFA (deterministic finite automaton) and an NFA (nondeterministic
+finite automaton), or that the fastest way to strip leading and trailing
+whitespace is (usually) like so:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;s/^\s+//&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #4e9a06&#34;&gt;s/s+$//&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I hadn&amp;rsquo;t actually learned Perl before getting this book. Perl is used in most
+of the examples in the book, which is what got me interested in the language.&lt;/p&gt;
+
+&lt;h2 id=&#34;mastering-algorithms-with-perl&#34;&gt;Mastering Algorithms with Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/masteringalgorithms.png&#34; alt=&#34;Mastering Algorithms with Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jon Orwant, Jarkko Hietaniemi, and John Macdonald&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not a computer scientist. Perhaps that&amp;rsquo;s why I found this book so
+interesting. It has working Perl code accompanying all the algorithms that
+are explained in the book, as well as discussions of pertinent CPAN modules.
+Though I suspect that last part might be a bit outdated, as the book was
+written almost a decade ago. If you know Perl and would like a hands-on
+introduction to algorithms, this book is great.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-best-practices&#34;&gt;Perl Best Practices&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlbestpractices.png&#34; alt=&#34;Perl Best Practices&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Damian Conway&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I liked this book. I like my code especially clean and readable, and this book
+has very good guidelines that can help achieve that. The book is a joy to read
+(it has humour!), and it&amp;rsquo;s got very useful appendices at the end with quick
+summaries of all the guidelines. Then, if you want to audit your source code
+according to some of these (and other) guidelines, you can use the excellent
+&lt;a href=&#34;http://search.cpan.org/dist/Perl-Critic/&#34;&gt;Perl::Critic&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-hacks&#34;&gt;Perl Hacks&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlhacks.png&#34; alt=&#34;Perl Hacks&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By &lt;code&gt;chromatic&lt;/code&gt;, Damian Conway, and Curtis &amp;ldquo;Ovid&amp;rdquo; Poe&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This one is sort of like The Perl Cookbook, except it focuses more on the
+process of working with Perl rather than specific solutions to various
+programmatic problems. As such, it&amp;rsquo;s not really aimed at beginners. It has
+many very useful tricks regarding things like customizing your editor for
+Perl, working with modules, (ab)using the guts of Perl, and debugging.
+There&amp;rsquo;s something in it for everyone.&lt;/p&gt;
+
+&lt;h2 id=&#34;higher-order-perl&#34;&gt;Higher-Order Perl&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/higherorderperl.png&#34; alt=&#34;Higher Order Perl&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Mark Jason Dominus&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Now&lt;/em&gt; it&amp;rsquo;s getting interesting. In this book, the author tries to familiarize
+the reader with ways of programming most common in purely functional
+languages like Lisp and Haskell. That makes it very different from most Perl
+books (in a good way). The book is all about &amp;ldquo;being clever&amp;rdquo; as the author has
+said, so you&amp;rsquo;re bound to learn something from it. I certainly have. The topics
+covered include recursion, dispatch tables, currying, and parsing, to name a
+few. There are &lt;a href=&#34;http://hop.perl.plover.com/#free&#34;&gt;plans&lt;/a&gt; to turn the book into
+wiki, but I I&amp;rsquo;m not sure when that&amp;rsquo;ll happen.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-6-and-parrot-essentials&#34;&gt;Perl 6 and Parrot Essentials&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perl6andparrot.png&#34; alt=&#34;Perl 6 and Parrot Essentials&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Allison Randal, Dan Sugalski, and Leopold Toetsch&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This book is an excellent introduction to Perl 6 and Parrot (the virtual
+machine which will run Perl 6), though I&amp;rsquo;ve been told that the Parrot bits
+are a little dated now. I read it in one sitting, it was that exciting. I
+realize that his book is about programming, and that this statement makes me
+a total geek. Oh well, there&amp;rsquo;s no looking back, Perl 6 will be awesome! The
+first half of the book covers the Perl 6 language, while the second covers
+the design of Parrot. I didn&amp;rsquo;t absorb as much as I could have from the second
+half as I don&amp;rsquo;t know much about parsing or compilers, but the first half more
+than made up for it. I really wish I could use all those nifty featues in my
+code right now. In the meantime, &lt;a href=&#34;http://en.wikipedia.org/wiki/Pugs&#34;&gt;Pugs&lt;/a&gt;
+will have to quence the thirst of those like me who are excited about Perl 6.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-6-now&#34;&gt;Perl 6 Now&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perl6now.png&#34; alt=&#34;Perl 6 Now&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Scott Walters&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I didn&amp;rsquo;t get much out of this book. For
+one, many things are explained which most Perl users already know, so I
+flipped over many pages while reading it. Secondly, many of the Perl 6 ideas
+are illustrated with modules that use source filters, which are known to be
+unreliable, so you definitely wouldn&amp;rsquo;t use them in production code.&lt;/p&gt;
+
+&lt;h2 id=&#34;catalyst&#34;&gt;Catalyst&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/catalyst.png&#34; alt=&#34;Catalyst&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Jonathan Rockway&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The chapters in this book follow a very &lt;em&gt;practical&lt;/em&gt; approach, diving right in
+and showing you various common ways of using Catalyst. I haven&amp;rsquo;t written much
+using this fine web framework, so there isn&amp;rsquo;t really much more I can say about
+the content of the book. I can say something about the &lt;em&gt;lack&lt;/em&gt; of content
+though. This book is missing an overview of Catalyst, and a better explanation
+of how all the parts fits together. Some discussion on the MVC architecture
+and how Catalyst implements it would have been nice as well. Seeing as the
+book is quite short, there would be plenty of room for these things.&lt;/p&gt;
+
+&lt;h2 id=&#34;perl-medic&#34;&gt;Perl Medic&lt;/h2&gt;
+
+
+&lt;figure class=&#34;book-pic&#34;&gt;
+    
+        &lt;img src=&#34;http://blog.nix.is/books/perlmedic.png&#34; alt=&#34;Perl Medic&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;&lt;em&gt;By Peter J. Scott&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I was not disappointed by this book. It delivers what is promised. Having
+recently started working on an old codebase, I found the book very useful.
+Testing, refactoring, benchmarking, debugging; all these things are well laid
+out by the author. It also has a useful chapter on upgrading code written for
+older versions on Perl, and discusses how to make use of newer features.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IRC and character encoding</title>
+      <link>http://blog.nix.is/irc-and-character-encoding</link>
+      <pubDate>Thu, 01 May 2008 01:44:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/irc-and-character-encoding</guid>
+      <description>&lt;p&gt;A while ago, I wrote an IRC logger for
+&lt;a href=&#34;http://search.cpan.org/dist/POE-Component-IRC/&#34;&gt;POE::Component::IRC&lt;/a&gt;, which
+is an IRC client module for Perl. The main challenge I faced was the issue of
+character encodings. Since IRC is ripe with clients that use different
+encodings, messages must be reliably decoded before they are written to a
+file.
+&lt;/p&gt;
+
+&lt;p&gt;You see, &lt;a href=&#34;http://www.faqs.org/rfcs/rfc1459.html&#34;&gt;RFC 1459&lt;/a&gt;, the standards
+document describing the IRC protocol, does not regulate the use of character
+encodings:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2.2 Character codes
+
+No specific character set is specified. The protocol is based on a
+set of codes which are composed of eight (8) bits, making up an
+octet. Each message may be composed of any number of these octets;
+however, some octet values are used for control codes which act as
+message delimiters.
+
+Regardless of being an 8-bit protocol, the delimiters and keywords
+are such that protocol is mostly usable from USASCII terminal and a
+telnet connection.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ASCII uses the first 7 bits. So, from the looks of it, you should only be able
+to rely on the first seven bits representing an ASCII character, the
+interpretation of the last bit being anyone&amp;rsquo;s guess. That&amp;rsquo;s bad.&lt;/p&gt;
+
+&lt;p&gt;For most of IRC&amp;rsquo;s history, the most popular IRC client has been mIRC. Until
+recently, mIRC decoded incoming messages using the ANSI code page that was
+currently being used on the user&amp;rsquo;s Windows system. This meant that whenever
+mIRC users wanted to communicate using anything other than ASCII characters,
+they&amp;rsquo;d better be using the same code page. In later versions, mIRC decodes
+incoming messages as UTF-8 if they look UTF-8 encoded, or code page 1252 (used
+by most Westerners). As for &lt;em&gt;how&lt;/em&gt; it does this, I cannot know since mIRC is
+closed-source.&lt;/p&gt;
+
+&lt;p&gt;The open-source client irssi handles the situation similarly. It uses GLib&amp;rsquo;s
+&lt;a href=&#34;http://library.gnome.org/devel/glib/2.16/glib-Unicode-Manipulation.html#g-utf8-validate&#34;&gt;g_utf8_validate()&lt;/a&gt;
+function to check if the incoming message is UTF-8 encoded, otherwise it falls
+back to CP1252 by default. As for XChat, it uses the same GLib function, but
+if it determines that the message is not UTF-8, XChat decodes the message in a
+rather novel way. Here is an excerpt from its
+&lt;a href=&#34;http://xchat.cvs.sourceforge.net/xchat/xchat2/src/common/text.c?view=markup&#34;&gt;&lt;code&gt;src/common/text.c&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/* converts a CP1252/ISO-8859-1(5) hybrid to UTF-8                           */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/* Features: 1. It never fails, all 00-FF chars are converted to valid UTF-8 */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           2. Uses CP1252 in the range 80-9f because ISO doesn&amp;#39;t have any- */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*              thing useful in this range and it helps us receive from mIRC */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           3. The five undefined chars in CP1252 80-9f are replaced with   */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*              ISO-8859-15 control codes.                                   */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           4. Handles 0xa4 as a Euro symbol ala ISO-8859-15.               */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           5. Uses ISO-8859-1 (which matches CP1252) for everything else.  */&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/*           6. This routine measured 3x faster than g_convert :)            */&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;How would I handle this in Perl? I don&amp;rsquo;t want to depend on GLib, and I don&amp;rsquo;t
+want to write any C code (requiring the user to have a C compiler). At first I
+tried using &lt;a href=&#34;http://search.cpan.org/dist/Encode-Detect/&#34;&gt;Encode::Detect&lt;/a&gt;, but
+there are two problems with it. It&amp;rsquo;s an extra dependency, and more
+importantly, it works heuristically, deciding which character set is being
+used based on the number of occurences of each character code. As such, it&amp;rsquo;s
+only reliable when large amounts of data are involved. Like a whole web page,
+for example, which is what the code was written for. Then I learned of
+&lt;a href=&#34;http://perldoc.perl.org/Encode/Guess.html&#34;&gt;Encode::Guess&lt;/a&gt;, which is included
+with Perl as of version 5.6.0. The following decodes &lt;code&gt;$line&lt;/code&gt; as UTF-8 if
+Encode::Guess is sure that it&amp;rsquo;s UTF-8. Otherwise it decodes it as CP1252.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;use&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Encode&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;qw(decode)&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;use&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Encode::Guess&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;my&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$utf8&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;guess_encoding&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;);&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;ref&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$utf8&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;#39;cp1252&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$line&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So far this method has worked flawlessly for me on channels with mixed
+encodings. However, I don&amp;rsquo;t know exactly how Encode::Guess works, so I&amp;rsquo;m not
+as confident in this method as I could be. Any feedback on this issue would be
+quite welcome.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Theming the Linux console</title>
+      <link>http://blog.nix.is/theming-the-linux-console</link>
+      <pubDate>Tue, 29 Apr 2008 05:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/theming-the-linux-console</guid>
+      <description>&lt;p&gt;While messing with my Linux console recently, I stumbled upon the
+&lt;a href=&#34;http://kerneltrap.org/man/linux/man4/console_codes.4&#34;&gt;console_codes(4)&lt;/a&gt; man
+page. Apparently there are Linux-specific escape codes to redefine the color
+palette. Awesome! I&amp;rsquo;ve always preferred the
+&lt;a href=&#34;http://uwstopia.nl/blog/2006/07/tango-terminal&#34;&gt;&amp;ldquo;Tango&amp;rdquo; terminal palette&lt;/a&gt;
+that recently became the default in &lt;code&gt;gnome-terminal&lt;/code&gt;. Now I can use it
+outside of X.
+&lt;/p&gt;
+
+&lt;p&gt;Everybody likes screenshots: &lt;a href=&#34;http://blog.nix.is/console-before.png&#34;&gt;before&lt;/a&gt; and
+&lt;a href=&#34;http://blog.nix.is/console-after.png&#34;&gt;after&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Apparently &lt;a href=&#34;http://en.wikipedia.org/wiki/PuTTY&#34;&gt;PuTTY&lt;/a&gt; supports
+these escapes as well.&lt;/p&gt;
+
+&lt;p&gt;Using the escape codes to change the palette is quite laborious, so I decided
+to write a small program to make it easier to switch between various palettes.
+You can find it &lt;a href=&#34;http://search.cpan.org/dist/App-ConPalette&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is one problem though. The Linux console doesn&amp;rsquo;t allow you to set the
+default foreground/backround colors independently of the color palette, as you
+can do in most GUI terminal emulators. In the absence of any ANSI color
+espaces, Linux uses the first and last colors of the palette for the
+background and foreground (text), respectively. This means that if I were to
+reuse the Tango palette verbatim in the Linux console, the background would be
+dark grey and the text would be almost white. This makes man pages harder to
+read, and I prefer a black background with medium gray text anyway, as is the
+default in the Linux console. To solve this, I created a palette called
+&amp;ldquo;tango-dark&amp;rdquo; with the first color black and the last color medium grey, and
+called the unmodified palette &amp;ldquo;tango-light&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;In addition to the &lt;code&gt;gnome-terminal&lt;/code&gt; palettes (rxvt, tango, xterm), I also
+added KDE Konsole&amp;rsquo;s palette, as well as the color palette used by the
+&lt;a href=&#34;http://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes#ZX_Spectrum&#34;&gt;Sinclair Spectrum&lt;/a&gt;,
+since it mostly fits the ANSI palette (it has black listed twice, so I
+replaced one with a dark grey color, which it was missing).&lt;/p&gt;
+
+&lt;p&gt;So, assuming Perl is installed, the program can be installed on most
+distributions in the following manner:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cpan -i App::ConPalette
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ conpalette --help
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

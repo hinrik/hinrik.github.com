@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>POE::Component::IRC 6.00 is here - literal thoughts</title>
+<meta property="og:title" content="POE::Component::IRC 6.00 is here - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">POE::Component::IRC 6.00 is here</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/irc">irc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">March 3, 2009</span>
+    
+
+    <div class="article-content">
+      <p><a href="http://search.cpan.org/dist/POE-Component-IRC">POE::Component::IRC</a> version
+6.00 has just been released on CPAN. I&rsquo;ve neglected to blog about PoCo::IRC
+since I started contributing to it, but since a new major release has been
+rolled out[1], now would be a good time. Also, as it turns out, next May will
+be the tenth anniversary of the project&rsquo;s first release.
+</p>
+
+<p>For the uninitiated, POE::Component::IRC is an event-driven IRC client library
+built on top of POE. People mostly use it to write bots. Some have made that
+even easier by creating a simpler interface suited to that task (see
+Bot::BasicBot).</p>
+
+<p>I became involved in the project about 14 months ago, fixing bugs and adding
+features. There&rsquo;ve been about 50 releases during that time, so there&rsquo;s
+something for everybody. Following is a list of the most prominent ones.</p>
+
+<h3 id="important-squashed-bugs">Important squashed bugs</h3>
+
+<ul>
+<li>Quite a few DCC-related bugs have been fixed, error handling and diagnostics have been improved.</li>
+<li>A bug causing the NickReclaim plugin to only try to reclaim the nick once has been fixed.</li>
+<li>POE::Component::IRC::State was reacting incorrectly to some WHO replies sent by IRC servers that veered from the RFCs, causing it to hold inconsistent information. This has been fixed.</li>
+<li>When raw messages were enabled, the raw line was not provided with CTCP-related events. Fixed.</li>
+<li>POE::Component::IRC::State would issue more WHO commands than necessary when another user would join more than one of the component&rsquo;s channels. No more.</li>
+</ul>
+
+<h3 id="new-major-features">New major features</h3>
+
+<ul>
+<li>POE::Component::IRC::Common, which provides many helper functions, now has functions for identifying and stripping color/formatting from IRC messages. It also defines IRC color constants for use in messages.</li>
+<li>We now handle FreeNode&rsquo;s IDENTIFY-MSG capability, which means that can you always know whether a user had identified with NickServ when s/he wrote a particular message.</li>
+<li>Sending and receiving files with spaces in them over DCC is now supported.</li>
+<li>All DCC-related events now provide the IP address of the peer.</li>
+<li>DCC resume support has been implemented.</li>
+<li>The BotTraffic plugin now send an event for every CTCP ACTION issued by the client.</li>
+<li>We now guard against sending IRC protocol messages that are too long and might get us booted off the server.</li>
+<li>The Connector plugin (takes care of maintaining the connection to the IRC server) now supports cycling through a list of servers when reconnecting.</li>
+<li>The CTCP plugin can now respond to CTCP SOURCE requests for you.</li>
+<li>POE::Component::IRC::State and can now track the away status of users for you.</li>
+<li>POE::Component::IRC::State now keeps track of a channel&rsquo;s creation time.</li>
+<li>Added NICKSERV, SERVLIST, and SQUERY commands.</li>
+<li>Plugins can now respond to custom events which have not been explicitly defined by POE::Component::IRC.</li>
+</ul>
+
+<h3 id="new-plugins">New plugins</h3>
+
+<p>I wrote 5 additional core plugins:</p>
+
+<ul>
+<li>First of all, the <strong>Logger</strong> plugin. It logs channel/private/dcc chat activity to files on disk like normal IRC clients do.</li>
+<li>Then there&rsquo;s <strong>AutoJoin</strong>, which takes care of keeping you on your favorite channels, whatever happens.</li>
+<li><strong>NickServID</strong> deals with identifying your user to NickServ.</li>
+<li>A <strong>CycleEmpty</strong> plugin which reclaims ops on channels that become empty.</li>
+<li><strong>BotCommand</strong>, which allows you to register commands that your bot handles, and get back an appropriate event when one is issued.</li>
+</ul>
+
+<h3 id="testing">Testing</h3>
+
+<p>The test suite has been reorganized, many tests improved and more added. The
+test coverage (as reported by Devel::Cover) has increased from 40% (version
+5.48) to 61% (version 6.00).</p>
+
+<h3 id="refactoring">Refactoring</h3>
+
+<p>Much refactoring was done. The coding and indenting style has also been made
+consistent across the project, and many spotty coding practices have been
+eliminated (thanks, Perl::Critic).</p>
+
+<p>POE::Filter::CTCP was merged with POE::Filter::IRC:Compat, and the former was
+removed. DCC support has been moved into its own plugin, and the plugin system
+itself has been ripped out in favor of POE::Component::Pluggable (which is
+based on the aforementioned plugin system).</p>
+
+<p>Using the project&rsquo;s current Perl::Critic parameters, version 6.00 has zero
+policy violations in 11,791 lines of code, compared to version 5.48&rsquo;s 242
+violations in 10,634 lines of code. The average
+<a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">McCabe</a> score of
+subroutines also dropped from 4.21 to 3.45.</p>
+
+<h3 id="documentation">Documentation</h3>
+
+<p>Last but not least, the Pod docs have been improved. Errors have been fixed,
+much more formatting and linking has been added for easier reading and
+browsing, consistency has been improved, and many sections have been expanded.</p>
+
+<p>I also added a
+<a href="http://search.cpan.org/perldoc?POE::Component::IRC::Cookbook">cookbook</a> with
+a few recipes showing off some of the things one can do with
+POE::Component::IRC.</p>
+
+<h3 id="credits">Credits</h3>
+
+<p>Thanks to all the users who provided feedback, bug reports and patches. You
+helped make this happen. I also couldn&rsquo;t have done many of these things
+without the help of Chris &lsquo;BinGOs&rsquo; Williams, the senior maintainer of
+POE::Component::IRC.</p>
+
+<p>Now go write some IRC bots (or clients)!</p>
+
+<p><em>Notes:</em></p>
+
+<ol>
+<li>It&rsquo;s actually quite an insignificant release. Historically,
+POE::Component::IRC versions have always passed the whole-number boundaries
+naturally as part of a regular &ldquo;bump the version number up by 0.02 for the
+next release&rdquo; process.</li>
+</ol>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/poe-component-irc-600-is-here';
+    var disqus_title = 'POE::Component::IRC 6.00 is here';
+    var disqus_url = 'http:\/\/blog.nix.is\/poe-component-irc-600-is-here';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

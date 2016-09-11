@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>literal thoughts</title>
+    <link>http://blog.nix.is/tags/linux/index.xml</link>
+    <description>Recent content on literal thoughts</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://blog.nix.is/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Theming the Linux console</title>
+      <link>http://blog.nix.is/theming-the-linux-console</link>
+      <pubDate>Tue, 29 Apr 2008 05:03:00 +0000</pubDate>
+      
+      <guid>http://blog.nix.is/theming-the-linux-console</guid>
+      <description>&lt;p&gt;While messing with my Linux console recently, I stumbled upon the
+&lt;a href=&#34;http://kerneltrap.org/man/linux/man4/console_codes.4&#34;&gt;console_codes(4)&lt;/a&gt; man
+page. Apparently there are Linux-specific escape codes to redefine the color
+palette. Awesome! I&amp;rsquo;ve always preferred the
+&lt;a href=&#34;http://uwstopia.nl/blog/2006/07/tango-terminal&#34;&gt;&amp;ldquo;Tango&amp;rdquo; terminal palette&lt;/a&gt;
+that recently became the default in &lt;code&gt;gnome-terminal&lt;/code&gt;. Now I can use it
+outside of X.
+&lt;/p&gt;
+
+&lt;p&gt;Everybody likes screenshots: &lt;a href=&#34;http://blog.nix.is/console-before.png&#34;&gt;before&lt;/a&gt; and
+&lt;a href=&#34;http://blog.nix.is/console-after.png&#34;&gt;after&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Apparently &lt;a href=&#34;http://en.wikipedia.org/wiki/PuTTY&#34;&gt;PuTTY&lt;/a&gt; supports
+these escapes as well.&lt;/p&gt;
+
+&lt;p&gt;Using the escape codes to change the palette is quite laborious, so I decided
+to write a small program to make it easier to switch between various palettes.
+You can find it &lt;a href=&#34;http://search.cpan.org/dist/App-ConPalette&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is one problem though. The Linux console doesn&amp;rsquo;t allow you to set the
+default foreground/backround colors independently of the color palette, as you
+can do in most GUI terminal emulators. In the absence of any ANSI color
+espaces, Linux uses the first and last colors of the palette for the
+background and foreground (text), respectively. This means that if I were to
+reuse the Tango palette verbatim in the Linux console, the background would be
+dark grey and the text would be almost white. This makes man pages harder to
+read, and I prefer a black background with medium gray text anyway, as is the
+default in the Linux console. To solve this, I created a palette called
+&amp;ldquo;tango-dark&amp;rdquo; with the first color black and the last color medium grey, and
+called the unmodified palette &amp;ldquo;tango-light&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;In addition to the &lt;code&gt;gnome-terminal&lt;/code&gt; palettes (rxvt, tango, xterm), I also
+added KDE Konsole&amp;rsquo;s palette, as well as the color palette used by the
+&lt;a href=&#34;http://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes#ZX_Spectrum&#34;&gt;Sinclair Spectrum&lt;/a&gt;,
+since it mostly fits the ANSI palette (it has black listed twice, so I
+replaced one with a dark grey color, which it was missing).&lt;/p&gt;
+
+&lt;p&gt;So, assuming Perl is installed, the program can be installed on most
+distributions in the following manner:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cpan -i App::ConPalette
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ conpalette --help
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

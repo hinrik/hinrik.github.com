@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>Testing vim syntax files - literal thoughts</title>
+<meta property="og:title" content="Testing vim syntax files - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Testing vim syntax files</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+                <a href="http://blog.nix.is//tags/vim">vim</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">September 9, 2009</span>
+    
+
+    <div class="article-content">
+      <p>Yesterday, Andy Lester opened an <a href="http://github.com/petdance/vim-perl/issues#issue/15">issue</a>
+for vim-perl on github about adding an automated test suite. I&rsquo;ve thought
+about doing something like this before, so last night got busy with
+prototyping a test harness.
+</p>
+
+<p>What I&rsquo;ve got so far (in <a href="https://github.com/hinrik/vim-perl/tree">my fork</a>)
+is a test file that uses Text::VimColor to generate HTML and compare it
+against a reference HTML document to determine if the syntax file is doing its
+job. If a reference file can&rsquo;t be found, it will create it and skip that
+test. Here&rsquo;s what it looks like:</p>
+
+<pre><code>$ make test
+prove -rv t
+t/01_highlighting.t .. 
+ok 1 - Correct output for t_source/perl/basic.t
+ok 2 # skip Created t_source/perl/advanced.t.html
+ok 3 - Correct output for t_source/perl6/basic.t
+1..3
+ok
+All tests successful.
+</code></pre>
+
+<p>In case of failure, it will use Test::Differences to show you what&rsquo;s wrong,
+and write the incorrect output to disk for you to inspect:</p>
+
+<pre><code>$ vim syntax/perl6.vim # make a bad change
+$ make test
+prove -rv t
+t/01_highlighting.t .. 
+ok 1 - Correct output for t_source/perl/basic.t
+ok 2 - Correct output for t_source/perl/advanced.t
+not ok 3 - Correct output for t_source/perl6/basic.t
+
+#   Failed test 'Correct output for t_source/perl6/basic.t'
+#   at t/01_highlighting.t line 77.
+#
+«output from Test::Differences showing the offending lines»
+# You can inspect the incorrect output at t_source/perl6/basic.t_fail.html
+1..3
+# Looks like you failed 1 test of 3.
+Dubious, test returned 1 (wstat 256, 0x100)
+Failed 1/3 subtests
+</code></pre>
+
+<p>The only big downside to this is that <code>01_highlighting.t</code> tests all the source
+files in one go. You currently can&rsquo;t tell it to only test one specific file.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/testing-vim-syntax-files';
+    var disqus_title = 'Testing vim syntax files';
+    var disqus_url = 'http:\/\/blog.nix.is\/testing-vim-syntax-files';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

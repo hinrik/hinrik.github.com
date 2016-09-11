@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.17-DEV" />
+
+
+<title>Half way there - literal thoughts</title>
+<meta property="og:title" content="Half way there - literal thoughts">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="http://blog.nix.is/css/main.css" media="all">
+<link href="/css/fonts.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+
+
+  <ul class="nav-links">
+    
+    <li><a href="https://www.flickr.com/photos/hinrik">Flickr</a></li>
+    
+    <li><a href="http://github.com/hinrik">Github</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Half way there</h1>
+
+    <div class="post-after">
+        <div class="tags">
+            
+            
+                <a href="http://blog.nix.is//tags/gsoc">gsoc</a>
+            
+                <a href="http://blog.nix.is//tags/perl">perl</a>
+            
+                <a href="http://blog.nix.is//tags/perl6">perl6</a>
+            
+        </div>
+    </div>
+    
+    <span class="article-date">July 7, 2009</span>
+    
+
+    <div class="article-content">
+      <p>With Summer of Code&rsquo;s mid-term evaluations coming up, some interesting things
+are about to happen to <code>grok</code>. I was contacted by Herbert Breunung, author of
+<a href="http://search.cpan.org/dist/Perl6-Doc/">Perl6::Doc</a> (formerly
+Perl6::Bible), which is a project that shares some of <code>grok</code>&rsquo;s goals.
+</p>
+
+<p>He told me that he doesn&rsquo;t have enough time to maintain his project anymore
+and would like some sort of merge to happen. I said I&rsquo;d look into it. His
+project bundles all the Synopses, Apocalypses, Exegeses, and some other Perl 6
+documentation, and ships with a <code>perldoc</code> wrapper for reading them. What I
+would like to do is to move all documentation out of the <code>grok</code> distribution
+and update/add more to Perl6::Doc while eliminating the <code>perldoc</code> wrapper
+(in favor of <code>grok</code>).</p>
+
+<p>He also brought to my attention the <a href="http://www.perlfoundation.org/perl6/index.cgi?perl_table_index">Perl Table Index</a>,
+a sort of Perl 6 glossary. Ahmad Zawawi has <a href="http://padre.perlide.org/trac/changeset/5994">just patched</a>
+his <a href="http://search.cpan.org/dist/Padre-Plugin-Perl6/">Padre::Plugin::Perl6</a> to
+feed this index to <code>grok</code>. I will probably port the Perl Table Index to the
+Perl6::Doc distribution and make <code>grok</code> look things up in it.</p>
+
+<p>I&rsquo;ve started writing a Pod::Text subclass as well as amending
+Perl6::Perldoc::To::Ansi to conform to a consistent color scheme when using
+the default ANSI-colored output.</p>
+
+<p>Something which <code>grok</code> should eventually be able to do is recognize arbitrary
+Perl 6 syntax (at very fine level of granularity, that is) and tell you what
+it means. A first stab at this will be to simply include a table of some
+common ones and look those up. Stuff like <code>my</code>, <code>+</code>, and so on. Doing this
+reliably is the original inspiration for the u4x project (Userdocs for
+Christmas), of which <code>grok</code> is a part.</p>
+
+<p>I hope to make a release of <code>grok</code> and Perl6::Doc shortly which will include
+all of the above.</p>
+    </div>
+  </article>
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'literalthoughts';
+    var disqus_identifier = 'http:\/\/blog.nix.is\/half-way-there';
+    var disqus_title = 'Half way there';
+    var disqus_url = 'http:\/\/blog.nix.is\/half-way-there';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+            
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="http://blog.nix.is/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+
